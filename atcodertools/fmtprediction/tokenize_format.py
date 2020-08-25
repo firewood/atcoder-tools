@@ -1,4 +1,5 @@
 import copy
+import re
 from typing import List, Dict
 
 from atcodertools.fmtprediction.models.calculator import CalcNode, CalcParseError
@@ -66,6 +67,21 @@ def _remove_spaces_in_curly_brackets(input_format):
 
 
 def _sanitized_tokens(input_format: str) -> List[str]:
+#    print("PRE-FILTERED TOKENS: " + input_format)
+    a = []
+    for s in input_format.split('\n'):
+        # AGC007-A, ABC173-C
+        result = re.match('(.)_\{([^,]*)[,]*1\}[^\s].*_\{.*\}', s)
+        if result is not None:
+            s = '{}_{{{}}}'.format(result.group(1), result.group(2))
+        # ARC005-C
+        result = re.match('(.)_\{\(([^,]*)[,]*[01]\)\}[^\s].*_\{.*\}', s)
+        if result is not None:
+            s = '{}_{{{}}}'.format(result.group(1), result.group(2))
+        a.append(s)
+    input_format = '\n'.join(a)
+#    print("FILTERED TOKENS: " + input_format)
+
     input_format = input_format.replace("\n", " ").replace("…", " ").replace("...", " ").replace(
         "..", " ").replace("\\ ", " ").replace("}", "} ").replace("　", " ").replace(", ", ",")
     input_format = _remove_spaces_in_curly_brackets(input_format)
