@@ -74,7 +74,7 @@ def _sanitized_tokens(input_format: str) -> List[str]:
         result = re.match('(.)_\{([^,]*)[,]*1\}[^\s].*_\{.*\}', s)
         if result is not None:
             s = '{}_{{{}}}'.format(result.group(1), result.group(2))
-        # ARC005-C
+        # ARC005-B, ARC005-C
         result = re.match('(.)_\{\(([^,]*)[,]*[01]\)\}[^\s].*_\{.*\}', s)
         if result is not None:
             s = '{}_{{{}}}'.format(result.group(1), result.group(2))
