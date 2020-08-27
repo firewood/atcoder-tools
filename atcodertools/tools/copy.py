@@ -11,6 +11,7 @@ from atcodertools.common.logging import logger
 from atcodertools.codegen.code_style_config import DEFAULT_WORKSPACE_DIR_PATH
 from atcodertools.codegen.template_engine import render
 from atcodertools.tools.models.metadata import Metadata
+from atcodertools.executils.run_command import run_command
 
 
 def copy_to_repository(dir: str, metadata: Metadata, config: Config):
@@ -27,6 +28,7 @@ def copy_to_repository(dir: str, metadata: Metadata, config: Config):
     source_path = os.path.join(dir, filename)
     target_path = os.path.join(target_dir, filename)
     shutil.copy(source_path, target_path)
+    run_command('git add {}'.format(filename), target_dir)
     logger.info("From: {}, To: {}".format(source_path, target_path))
 
 
