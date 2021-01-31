@@ -75,8 +75,12 @@ def _sanitized_tokens(input_format: str) -> List[str]:
         s = re.sub(r'(.)_{([^,]*)[,]?1}[^\s].*_{[,\w]*}', r'\1_\2', s)
         # ARC005 C: c_{(0,0)}c_{(0,1)} … c_{(0,W-1)} -> c_0
         s = re.sub(r'(.)_{\(([^,]*)[,]?[01]\)}.*_{[^{}]*}', r'\1_\2', s)
-        # ABC185 A: 
-        s = re.sub(r'\\hspace{\d+pt}', r'', s)
+        # ABC185 A, ABC 190 E: hspace{}
+        s = re.sub(r'\\hspace{\d+(pt|mm)}', r'', s)
+
+#        # ABC189 E:
+#        s = re.sub(r'\\mathrm{op}', r'OP', s)
+
         a.append(s)
     input_format = '\n'.join(a)
 #    print("FILTERED TOKENS: " + input_format)
