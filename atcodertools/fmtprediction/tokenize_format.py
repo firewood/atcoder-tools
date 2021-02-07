@@ -72,7 +72,8 @@ def _sanitized_tokens(input_format: str) -> List[str]:
     for s in input_format.split('\n'):
         # AGC007 A: A_{11}A_{12}...A_{1W} -> A_1
         # ABC173 C: c_{1,1}c_{1,2}...c_{1,W} -> c_1
-        s = re.sub(r'(.)_{([^,]*)[,]?1}[^\s].*_{[,\w]*}', r'\1_\2', s)
+        # ABC191 C: S_{1, 1} S_{1, 2} S_{1, 3} \dots S_{1, W}
+        s = re.sub(r'(.)_{([^,]*)[,]?\s*1}(\s*._{[,\w\s]+}|\s*\.+|\s*\\dots)+', r'\1_\2', s)
         # ARC005 C: c_{(0,0)}c_{(0,1)} … c_{(0,W-1)} -> c_0
         s = re.sub(r'(.)_{\(([^,]*)[,]?[01]\)}.*_{[^{}]*}', r'\1_\2', s)
         # ABC185 A, ABC 190 E: hspace{}
