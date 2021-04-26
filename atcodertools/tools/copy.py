@@ -73,6 +73,7 @@ def main(prog, args):
                         help="Target directory to test. [Default] Current directory",
                         default=".")
     args = parser.parse_args(args)
+    args.skip_existing_problems = False  # dummy for get_config()
     config = get_config(args)
 
     metadata_file = os.path.join(args.dir, "metadata.json")
