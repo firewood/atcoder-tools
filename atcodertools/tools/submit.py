@@ -13,6 +13,7 @@ from atcodertools.tools import tester
 from atcodertools.common.logging import logger
 
 from atcodertools.tools.models.metadata import Metadata
+from atcodertools.fileutils.load_text_file import load_text_file
 
 
 def main(prog, args, credential_supplier=None, use_local_session_cache=True) -> bool:
@@ -110,13 +111,7 @@ def main(prog, args, credential_supplier=None, use_local_session_cache=True) -> 
                     return False
 
         code_path = args.code or os.path.join(args.dir, metadata.code_filename)
-        for encoding in ['utf8', 'utf-8_sig', 'cp932']:
-            try:
-                with open(code_path, 'r', encoding=encoding) as f:
-                    source = f.read()
-                break
-            except UnicodeDecodeError:
-                logger.warning("code wasn't recognized as {}".format(encoding))
+        source = load_text_file(code_path)
         logger.info(
             "Submitting {} as {}".format(code_path, metadata.lang.name))
         submission = client.submit_source_code(
