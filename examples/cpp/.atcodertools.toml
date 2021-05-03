@@ -1,0 +1,6 @@
+[codestyle]
+workspace_dir='~/atcoder-tools/examples/cpp'
+lang='cpp'
+template_file='~/atcoder-tools/examples/cpp/atcoder.cpp'
+indent_type='tab' # 'tab' or 'space'
+indent_width=1
