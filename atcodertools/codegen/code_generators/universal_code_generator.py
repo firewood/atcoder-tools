@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import Dict, Any, Optional
+from typing import Dict, List, Any, Optional
 import re
 
 from atcodertools.codegen.code_style_config import CodeStyleConfig
@@ -80,10 +80,7 @@ class UniversalCodeGenerator():
                 lines.append(line)
             if newline_after_input:
                 lines.append("")
-        for pattern in self._format.sequence:
-            lines += self._render_pattern(pattern, global_mode)
-            if newline_after_input:
-                lines.append("")
+        lines = self._render_patterns(self._format.sequence, global_mode, newline_after_input)
         result = ""
         prefix = "{indent}".format(
             indent=self._indent(self.info["base_indent"]))
@@ -238,12 +235,43 @@ class UniversalCodeGenerator():
         self._append_declaration_and_allocation(lines, pattern, global_mode)
         self._append(lines, self._input_code_for_var(var))
 
+    def _merge_common_lines(self, raw_lines: List[str]):
+        lines = []
+        prev_line = ''
+        for line in raw_lines:
+            for keyword in [self.info["type"]["int"], self.info["type"]["float"], self.info["type"]["str"], 'std::cin', 'std::vector<int64_t>']:
+                a = re.match('^(\s*)' + keyword + '(.*);', prev_line)
+                b = re.match('^(\s*)' + keyword + '(.*);', line)
+                if a and b:
+                    prev_line = a.group(1) + keyword + a.group(2);
+                    if b.group(2)[1] != '>':
+                        prev_line += ','
+                    prev_line += b.group(2) + ';'
+                    line = ''
+            if line != '':
+                lines.append(prev_line)
+                prev_line = line
+        lines.append(prev_line)
+        return lines[1:]
+
+    def _render_patterns(self, patterns: List[Pattern], global_mode, newline_after_input):
+        lines = []
+        for pattern in patterns:
+            for var in pattern.all_vars():
+                if isinstance(pattern, SingularPattern):
+                    self._append_declaration_and_allocation(lines, pattern, global_mode)
+        for pattern in patterns:
+            lines += self._render_pattern(pattern, global_mode)
+            if newline_after_input:
+                lines.append("")
+        return self._merge_common_lines(lines)
+
     def _render_pattern(self, pattern: Pattern, global_mode):
         lines = []
 
         representative_var = pattern.all_vars()[0]
         if isinstance(pattern, SingularPattern):
-            self._append_singular_pattern(lines, pattern, global_mode)
+            pass
         elif isinstance(pattern, ParallelPattern):
             added = False
             if len(pattern.all_vars()) == 1:
