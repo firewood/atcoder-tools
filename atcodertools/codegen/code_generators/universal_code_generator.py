@@ -232,7 +232,6 @@ class UniversalCodeGenerator():
                 self._append(
                     lines, self.info["declare_and_input"][var.type.value].format(**kwd))
                 return
-        self._append_declaration_and_allocation(lines, pattern, global_mode)
         self._append(lines, self._input_code_for_var(var))
 
     def _merge_common_lines(self, raw_lines: List[str]):
@@ -271,7 +270,7 @@ class UniversalCodeGenerator():
 
         representative_var = pattern.all_vars()[0]
         if isinstance(pattern, SingularPattern):
-            pass
+            self._append_singular_pattern(lines, pattern, global_mode)
         elif isinstance(pattern, ParallelPattern):
             added = False
             if len(pattern.all_vars()) == 1:
