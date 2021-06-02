@@ -26,7 +26,7 @@ def copy_to_repository(source: str, destination: str, metadata: Metadata, config
     target_dir = os.path.join(destination, contest_id)
     os.makedirs(target_dir, exist_ok=True)
     source_path = os.path.join(source, filename)
-    target_path = os.path.join(target_dir, filename)
+    target_path = os.path.join(target_dir, filename.replace('main', problem_id.lower()))
     shutil.copy(source_path, target_path)
     run_command('git add {}'.format(filename), target_dir)
     logger.info("From: {}, To: {}".format(source_path, target_path))
