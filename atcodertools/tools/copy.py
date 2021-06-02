@@ -14,7 +14,7 @@ from atcodertools.tools.models.metadata import Metadata
 from atcodertools.executils.run_command import run_command
 
 
-def copy_to_repository(dir: str, metadata: Metadata, config: Config):
+def copy_to_repository(source: str, destination: str, metadata: Metadata, config: Config):
     contest_id = metadata.problem.contest.contest_id
     problem_id = metadata.problem.alphabet
     filename = metadata.code_filename
@@ -23,9 +23,9 @@ def copy_to_repository(dir: str, metadata: Metadata, config: Config):
         logger.error(with_color("Failed", Fore.RED))
         return
     contest_id = '{}_{}'.format(result.group(1), result.group(2))
-    target_dir = os.path.join(config.code_style_config.workspace_dir, '..', 'atcoder', contest_id)
+    target_dir = os.path.join(destination, contest_id)
     os.makedirs(target_dir, exist_ok=True)
-    source_path = os.path.join(dir, filename)
+    source_path = os.path.join(source, filename)
     target_path = os.path.join(target_dir, filename)
     shutil.copy(source_path, target_path)
     run_command('git add {}'.format(filename), target_dir)
@@ -69,14 +69,23 @@ def main(prog, args):
                         action="store_true",
                         help="Save no session cache to avoid security risk",
                         default=None)
-    parser.add_argument("--dir", '-d',
-                        help="Target directory to test. [Default] Current directory",
+    parser.add_argument("--source", '-s',
+                        help="Source directory contains metadata.json. [Default] Current directory",
                         default=".")
+    parser.add_argument("--destination", '-d',
+                        help="Destination directory to copy. [Default] Workspace directory")
     args = parser.parse_args(args)
     args.skip_existing_problems = False  # dummy for get_config()
     config = get_config(args)
 
-    metadata_file = os.path.join(args.dir, "metadata.json")
+    workspace_dir = args.workspace
+    if not workspace_dir:
+        workspace_dir = config.code_style_config.workspace_dir
+    destination = args.destination
+    if not destination:
+        destination = workspace_dir
+
+    metadata_file = os.path.join(args.source, "metadata.json")
     try:
         metadata = Metadata.load_from(metadata_file)
     except IOError:
@@ -84,7 +93,7 @@ def main(prog, args):
             "{0} is not found! You need {0} to use this submission functionality.".format(metadata_file))
         return False
 
-    copy_to_repository(args.dir, metadata, config)
+    copy_to_repository(args.source, destination, metadata, config)
 
 
 if __name__ == "__main__":
