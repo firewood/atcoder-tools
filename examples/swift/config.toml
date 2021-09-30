@@ -1,0 +1,10 @@
+[codestyle]
+#indent_type='tab'
+indent_type='space'
+#indent_width=4
+#workspace_dir='~/temp/atcoder-tools/examples/swift'
+workspace_dir='.'
+#lang='python'
+lang='swift'
+code_generator_toml='./codegen.toml'
+template_file='./template.swift'
