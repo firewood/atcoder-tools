@@ -1,0 +1,105 @@
+base_indent = 1
+insert_space_around_operators = false
+
+# global変数宣言時の接頭辞
+global_prefix = ""
+
+# ループ
+[loop]
+header = "for {loop_var} in 0..<{length} {{"
+footer = "}}"
+
+# タイプ
+[type]
+int = "Int"
+float = "Double"
+<<<<<<< HEAD
+string = "String"
+=======
+str = "String"
+>>>>>>> test_fmtprediction
+
+# デフォルト値
+[default]
+int = "0"
+float = "0.0"
+<<<<<<< HEAD
+string = '""'
+=======
+str = '""'
+>>>>>>> test_fmtprediction
+
+# 宣言
+[declare]
+int = "let {name}:Int"
+float = "let {name}:Double"
+<<<<<<< HEAD
+string = "let {name}:String"
+=======
+str = "let {name}:String"
+>>>>>>> test_fmtprediction
+seq = "var {name}:[{type}]"
+2d_seq = "var {name}:[[{type}]]"
+
+# 確保
+[allocate]
+seq = "{name} = [{type}](repeating: {default}, count: {length})"
+2d_seq = "{name} = [[{type}]](repeating: [{type}](repeating: {default}, count: {length_j}), count: {length_i})"
+# 宣言と確保
+[declare_and_allocate]
+seq = "var {name} = [{type}](repeating: {default}, count: {length})"
+2d_seq = "var {name} = [[{type}]](repeating: [{type}](repeating: {default}, count: {length_j}), count: {length_i})"
+# 入力関数
+[input_func]
+int = "readInt()"
+float = "readDouble()"
+<<<<<<< HEAD
+string = "readString()"
+
+# 入力
+[input]
+int = "{name} = readInt()"
+float = "{name} = readDouble()"
+string = "{name} = readString()"
+
+# 宣言と入力
+[declare_and_input]
+int = "let {name} = readInt()"
+float = "let {name} = readDouble()"
+string = "let {name} = readString()"
+=======
+str = "readString()"
+
+# 入力
+[input]
+int = "{name} = {input_func}"
+float = "{name} = {input_func}"
+str = "{name} = {input_func}"
+
+# 宣言と入力
+[declare_and_input]
+int = "let {name} = {input_func}"
+float = "let {name} = {input_func}"
+str = "let {name} = {input_func}"
+>>>>>>> test_fmtprediction
+
+# 引数
+[arg]
+int = "_ {name}:Int"
+float = "_ {name}:Double"
+<<<<<<< HEAD
+string = "_ {name}:String"
+=======
+str = "_ {name}:String"
+>>>>>>> test_fmtprediction
+seq = "_ {name}:[{type}]"
+2d_seq = "_ {name}:[[{type}]]"
+
+# 配列アクセス
+[access]
+<<<<<<< HEAD
+seq = "{name}[{index_i}]"
+=======
+seq = "{name}[{index}]"
+>>>>>>> test_fmtprediction
+2d_seq = "{name}[{index_i}][{index_j}]"

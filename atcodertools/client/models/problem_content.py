@@ -14,6 +14,12 @@ def normalize(content: str) -> str:
     return content.strip().replace('\r', '') + "\n"
 
 
+def normalize_soup(content) -> str:
+    # for a in content.findAll('var'):
+    #     a.replace_with(' ' + a.text + ' ')
+    return normalize(content.text)
+
+
 def is_japanese(ch):
     # Thank you!
     # http://minus9d.hatenablog.com/entry/2015/07/16/231608
@@ -92,7 +98,8 @@ class ProblemContent:
             if input_format_tag is None:
                 raise InputFormatDetectionError
 
-            input_format_text = normalize(input_format_tag.text)
+            # input_format_text = normalize(input_format_tag.text)
+            input_format_text = normalize_soup(input_format_tag)
         except AttributeError:
             raise InputFormatDetectionError
 
@@ -128,3 +135,10 @@ class ProblemContent:
         output_tags = sample_tags[1::2]
         input_format_tag = pre_tags[0]
         return input_format_tag, input_tags, output_tags
+
+
+def get_problem_content(original_html: str) -> ProblemContent:
+    try:
+        return ProblemContent.from_html(original_html)
+    except (InputFormatDetectionError, SampleDetectionError) as e:
+        raise e

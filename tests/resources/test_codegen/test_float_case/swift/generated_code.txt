@@ -1,0 +1,27 @@
+import Foundation
+
+func solve(_ L:Int, _ N:Int, _ M:Int, _ K:[Double], _ A:[Int], _ S:[Double]) {
+
+}
+
+func main() {
+    func readString() -> String { "" }
+    func readInt() -> Int { 0 }
+    func readDouble() -> Double { 0 }
+    let L = readInt()
+    let N = readInt()
+    let M = readInt()
+    var K = [Double](repeating: 0.0, count: L)
+    for i in 0..<L {
+        K[i] = readDouble()
+    }
+    var A = [Int](repeating: 0, count: N)
+    var S = [Double](repeating: 0.0, count: N)
+    for i in 0..<N {
+        A[i] = readInt()
+        S[i] = readDouble()
+    }
+    _ = solve(L, N, M, K, A, S)
+}
+
+main()

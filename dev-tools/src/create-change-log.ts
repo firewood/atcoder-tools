@@ -75,13 +75,23 @@ const isValidVersion = (version: string) => {
 }
 
 const fetchMilestonesInNewerOrderUpTo = async (latestVersion: string) => {
-    const allMilestones = await githubFetch<Milestone[]>("https://api.github.com/repos/kyuridenamida/atcoder-tools/milestones?state=open,closed");
-    return allMilestones.filter(milestone => {
-        if (!isValidVersion(milestone.title)) {
-            throw Error(`Non-semantic-versioned milestone title: ${milestone.title} has been detected.`);
-        }
-        return compareVersions(milestone.title, latestVersion) <= 0;
-    }).sort((v1, v2) => compareVersions(v1.title, v2.title)).reverse();
+    // Explicitly fetch open and closed milestones separately because if we specify "?state=open,closed" together,
+    // sometimes a new mile stone is missing.
+    const allMilestones = 
+          [
+              ...(await githubFetch<Milestone[]>("https://api.github.com/repos/kyuridenamida/atcoder-tools/milestones?state=open")),
+              ...(await githubFetch<Milestone[]>("https://api.github.com/repos/kyuridenamida/atcoder-tools/milestones?state=closed"))
+          ];
+
+    return allMilestones
+        // 1.1.8 exists in the milestones now, but will be ignored because it is pending for a special reason.
+        .filter(milestone => milestone.title !== "1.1.8")
+        .filter(milestone => {
+            if (!isValidVersion(milestone.title)) {
+                throw Error(`Non-semantic-versioned milestone title: ${milestone.title} has been detected.`);
+            }
+            return compareVersions(milestone.title, latestVersion) <= 0;
+        }).sort((v1, v2) => compareVersions(v1.title, v2.title)).reverse();
 
 }
 

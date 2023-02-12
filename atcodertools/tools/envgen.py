@@ -28,6 +28,7 @@ from atcodertools.fmtprediction.predict_format import NoPredictionResultError, \
 from atcodertools.tools import get_default_config_path
 from atcodertools.tools.models.metadata import Metadata
 from atcodertools.tools.utils import with_color
+from atcodertools.config.config import ConfigType
 
 
 class BannedFileDetectedError(Exception):
@@ -68,6 +69,13 @@ def prepare_procedure(atcoder_client: AtCoderClient,
 
     def emit_info(text):
         logger.info("Problem {}: {}".format(pid, text))
+
+    # Return if a directory for the problem already exists
+    if config.etc_config.skip_existing_problems:
+        if os.path.exists(problem_dir_path):
+            emit_info(
+                f"Skipped preparation because the directory already exists: {problem_dir_path}")
+            return
 
     emit_info('{} is used for template'.format(template_code_path))
 
@@ -144,6 +152,7 @@ def prepare_procedure(atcoder_client: AtCoderClient,
              config.etc_config.out_example_format.replace("{}", "*"),
              lang,
              constants.judge_method,
+             constants.timeout
              ).save_to(metadata_path)
     emit_info("Saved metadata to {}".format(metadata_path))
 
@@ -218,7 +227,7 @@ def get_config(args: argparse.Namespace) -> Config:
     def _load(path: str) -> Config:
         logger.info("Going to load {} as config".format(path))
         with open(path, 'r') as f:
-            return Config.load(f, args)
+            return Config.load(f, {ConfigType.CODESTYLE, ConfigType.POSTPROCESS, ConfigType.ETC}, args)
 
     if args.config:
         return _load(args.config)
@@ -275,6 +284,11 @@ def main(prog, args):
     parser.add_argument("--save-no-session-cache",
                         action="store_true",
                         help="Save no session cache to avoid security risk",
+                        default=None)
+
+    parser.add_argument("--skip-existing-problems",
+                        action="store_true",
+                        help="Skip processing every problem for which a directory already exists",
                         default=None)
 
     parser.add_argument("--config",

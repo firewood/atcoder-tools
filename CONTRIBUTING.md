@@ -34,6 +34,7 @@ poetry install
 ### 1. フォークする
 
 https://github.com/kyuridenamida/atcoder-tools を開き、右上のForkボタンでatcoder-toolsをforkしてください。
+新機能はstableブランチの続きとして開発してください。(masterは使わないでください。)
 
 ### 2. 実装をする
 
@@ -44,7 +45,7 @@ https://github.com/kyuridenamida/atcoder-tools を開き、右上のForkボタ�
     - 過去のconfigが動くこと
     - 過去のコマンドが動くこと
     
-複雑な機能については実装前にめissue等でデザインを相談していただくと手戻りコストが少ないかもしれません。
+複雑な機能については実装前にissue等でデザインを相談していただくと手戻りコストが少ないかもしれません。
 
 ### 3. テストを書く
 

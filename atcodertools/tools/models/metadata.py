@@ -1,20 +1,41 @@
 import json
+from typing import Optional
 
 from atcodertools.client.models.problem import Problem
+<<<<<<< HEAD
+from atcodertools.common.judgetype import NormalJudge, DecimalJudge, MultiSolutionJudge, InteractiveJudge, Judge, \
+    NoJudgeTypeException
+from atcodertools.common.language import Language, CPP
+
+DEFAULT_IN_EXAMPLE_PATTERN = 'in_*.txt'
+DEFAULT_OUT_EXAMPLE_PATTERN = "out_*.txt"
+=======
 from atcodertools.common.judgetype import NormalJudge, DecimalJudge, Judge
-from atcodertools.common.language import Language
+from atcodertools.common.language import Language, CPP
+>>>>>>> test_fmtprediction
 
 
 class Metadata:
 
+<<<<<<< HEAD
+    def __init__(self,
+                 problem: Optional[Problem],
+                 code_filename: Optional[str],
+                 sample_in_pattern: str,
+                 sample_out_pattern: str,
+                 lang: Optional[Language],
+                 judge_method: Judge = NormalJudge()):
+=======
     def __init__(self, problem: Problem, code_filename: str, sample_in_pattern: str, sample_out_pattern: str,
-                 lang: Language, judge_method: Judge = NormalJudge()):
+                 lang: Language, judge_method: Judge = NormalJudge(), timeout_ms: int = None):
+>>>>>>> test_fmtprediction
         self.problem = problem
         self.code_filename = code_filename
         self.sample_in_pattern = sample_in_pattern
         self.sample_out_pattern = sample_out_pattern
         self.lang = lang
         self.judge_method = judge_method
+        self.timeout_ms = timeout_ms
 
     def to_dict(self):
         return {
@@ -24,6 +45,7 @@ class Metadata:
             "sample_out_pattern": self.sample_out_pattern,
             "lang": self.lang.name,
             "judge": self.judge_method.to_dict(),
+            "timeout_ms": self.timeout_ms,
         }
 
     @classmethod
@@ -34,10 +56,19 @@ class Metadata:
                 judge_method = NormalJudge.from_dict(dic["judge"])
             elif judge_type == "decimal":
                 judge_method = DecimalJudge.from_dict(dic["judge"])
+            elif judge_type == "multisolution":
+                judge_method = MultiSolutionJudge()
+            elif judge_type == "interactive":
+                judge_method = InteractiveJudge()
             else:
-                raise Exception("invalid judge type")
+                raise NoJudgeTypeException()
         else:
             judge_method = NormalJudge()
+
+        if "timeout_ms" in dic:
+            timeout_ms = dic["timeout_ms"]
+        else:
+            timeout_ms = None
 
         return Metadata(
             problem=Problem.from_dict(dic["problem"]),
@@ -45,7 +76,8 @@ class Metadata:
             sample_in_pattern=dic["sample_in_pattern"],
             sample_out_pattern=dic["sample_out_pattern"],
             lang=Language.from_name(dic["lang"]),
-            judge_method=judge_method
+            judge_method=judge_method,
+            timeout_ms=timeout_ms
         )
 
     @classmethod
@@ -57,3 +89,20 @@ class Metadata:
         with open(filename, 'w') as f:
             json.dump(self.to_dict(), f, indent=1, sort_keys=True)
             f.write('\n')
+
+
+<<<<<<< HEAD
+=======
+DEFAULT_IN_EXAMPLE_PATTERN = 'in_*.txt'
+DEFAULT_OUT_EXAMPLE_PATTERN = "out_*.txt"
+
+
+>>>>>>> test_fmtprediction
+DEFAULT_METADATA = Metadata(
+    problem=None,
+    code_filename=None,
+    sample_in_pattern=DEFAULT_IN_EXAMPLE_PATTERN,
+    sample_out_pattern=DEFAULT_OUT_EXAMPLE_PATTERN,
+    lang=CPP,
+    judge_method=NormalJudge()
+)

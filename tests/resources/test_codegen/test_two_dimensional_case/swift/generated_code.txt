@@ -1,0 +1,28 @@
+import Foundation
+
+func solve(_ H:Int, _ W:Int, _ c:[[Int]], _ A:[[Int]]) {
+
+}
+
+func main() {
+    func readString() -> String { "" }
+    func readInt() -> Int { 0 }
+    func readDouble() -> Double { 0 }
+    let H = readInt()
+    let W = readInt()
+    var c = [[Int]](repeating: [Int](repeating: 0, count: 9+1), count: 9+1)
+    for i in 0..<9+1 {
+        for j in 0..<9+1 {
+            c[i][j] = readInt()
+        }
+    }
+    var A = [[Int]](repeating: [Int](repeating: 0, count: W), count: H)
+    for i in 0..<H {
+        for j in 0..<W {
+            A[i][j] = readInt()
+        }
+    }
+    _ = solve(H, W, c, A)
+}
+
+main()

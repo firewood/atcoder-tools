@@ -1,13 +1,22 @@
 import os
+import shutil
+import tempfile
 import unittest
+import shutil
+import tempfile
+import io
+import sys
 
 from colorama import Fore
 from unittest.mock import patch, mock_open, MagicMock
 
 from atcodertools.executils.run_program import ExecResult, ExecStatus
 from atcodertools.tools import tester
+from atcodertools.tools.models.metadata import Metadata
 from atcodertools.tools.tester import is_executable_file, TestSummary, build_details_str
 from atcodertools.tools.utils import with_color
+from atcodertools.common.language import ALL_LANGUAGES
+from atcodertools.tools.compiler import compile_main_and_judge_programs
 
 RESOURCE_DIR = os.path.abspath(os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -15,6 +24,8 @@ RESOURCE_DIR = os.path.abspath(os.path.join(
 
 
 class TestTester(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
 
     def test_multiple_exec_files(self):
         all_ok = tester.main(
@@ -57,6 +68,66 @@ class TestTester(unittest.TestCase):
             '', ['-d', test_dir, "-n", "1", "-v", "0.01", "-j", "relative"]))
         self.assertTrue(tester.main(
             '', ['-d', test_dir, "-n", "2", "-v", "0.01", "-j", "relative"]))
+
+    def test_run_single_test_decimal_mixed(self):
+        test_dir = os.path.join(
+            RESOURCE_DIR, "test_run_single_test_decimal_mixed")
+        self.assertFalse(tester.main(
+            '', ['-d', test_dir, "-n", "1", "-v", "0.01", "-j", "absolute_or_relative"]))
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "-n", "2", "-v", "0.01", "-j", "absolute_or_relative"]))
+        self.assertFalse(tester.main(
+            '', ['-d', test_dir, "-n", "1", "-v", "0.0001", "-j", "absolute_or_relative"]))
+        self.assertFalse(tester.main(
+            '', ['-d', test_dir, "-n", "2", "-v", "0.0001", "-j", "absolute_or_relative"]))
+
+    def test_run_single_test_multisolution(self):
+        test_dir = os.path.join(self.temp_dir, "test")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_run_single_test_multisolution"), test_dir)
+
+        setter_main('', ['-d', test_dir, "-j", "multisolution"])
+        metadata = Metadata.load_from(os.path.join(test_dir, "metadata.json"))
+        self.assertTrue(isinstance(metadata.judge_method, MultiSolutionJudge))
+
+        # Already set
+        setter_main('', ['-d', test_dir, "--lang", "cpp"])
+        metadata = Metadata.load_from(os.path.join(test_dir, "metadata.json"))
+        self.assertTrue(metadata.lang.name == 'cpp')
+
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, '-n', '1', '-c', "True"]))
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "-n", "2", "-c", "True"]))
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "-n", "3", "-c", "True"]))
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "-n", "4", "-c", "True"]))
+
+    def test_run_single_test_interactive(self):
+        test_dir = os.path.join(self.temp_dir, "test")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_run_single_test_interactive"), test_dir)
+
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "-n", "1", "-j", "interactive", '-c', "True"]))
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "-n", "2", "-j", "interactive", '-c', "True"]))
+
+    def test_compiler_and_tester(self):
+        test_dir = os.path.join(self.temp_dir, "test")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_compiler_and_tester"), test_dir)
+
+        for lang in ALL_LANGUAGES:
+            setter_main('', ["--lang", lang.name, '-d', test_dir])
+            metadata = Metadata.load_from(
+                os.path.join(test_dir, "metadata.json"))
+            compile_main_and_judge_programs(
+                metadata, force_compile=True, cwd=test_dir)
+            for i in [1, 2, 3, 4]:
+                self.assertTrue(tester.main(
+                    '', ['-d', test_dir, "-n", "{:d}".format(i), "-j", "normal"]))
 
     @patch('os.access', return_value=True)
     @patch('pathlib.Path.is_file', return_value=True)
@@ -194,6 +265,118 @@ class TestTester(unittest.TestCase):
             result = build_details_str(ExecResult(
                 ExecStatus.RE, in_out, stderr), 'in.txt', 'out.txt')
             self.assertEqual(expected, result)
+
+    def test_compiler_and_tester(self):
+        test_dir = os.path.join(self.temp_dir, "test1")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_compiler_and_tester"), test_dir)
+        for i in [1, 2, 3, 4]:
+            self.assertTrue(tester.main(
+                '', ['-d', test_dir, "-n", "{:d}".format(i), "--compile-before-testing",
+                     "-j", "normal",
+                     "--compile-command", "g++ main.cpp -o main && touch compile{}".format(i)]))
+        lst = os.listdir(test_dir)
+        self.assertTrue("compile1" in lst)
+        self.assertTrue("compile2" in lst)
+        self.assertTrue("compile3" in lst)
+        self.assertTrue("compile4" in lst)
+
+        test_dir = os.path.join(self.temp_dir, "test2")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_compiler_and_tester"), test_dir)
+        for i in [1, 2, 3, 4]:
+            self.assertTrue(tester.main(
+                '', ['-d', test_dir, "-n", "{:d}".format(i), "--compile-before-testing",
+                     "--compile-only-when-diff-detected", "-j", "normal",
+                     "--compile-command", "g++ main.cpp -o main && touch compile{}".format(i)]))
+        lst = os.listdir(test_dir)
+        self.assertTrue("compile1" in lst)
+        self.assertTrue("compile2" not in lst)
+        self.assertTrue("compile3" not in lst)
+        self.assertTrue("compile4" not in lst)
+
+        test_dir = os.path.join(self.temp_dir, "test3")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_compiler_and_tester"), test_dir)
+        for i in [1, 2, 3, 4]:
+            self.assertTrue(tester.main(
+                '', ['-d', test_dir, "-n", "{:d}".format(i), "--compile-before-testing",
+                     "--compile-only-when-diff-detected", "-j", "normal",
+                     "--compile-command", "g++ main.cpp -o main && touch compile{}".format(i)]))
+            os.chdir(test_dir)
+            os.system('echo // >> main.cpp')
+        lst = os.listdir(test_dir)
+        self.assertTrue("compile1" in lst)
+        self.assertTrue("compile2" in lst)
+        self.assertTrue("compile3" in lst)
+        self.assertTrue("compile4" in lst)
+
+    def test_compiler_and_tester_for_each_lang(self):
+        test_dir = os.path.join(self.temp_dir, "test")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_compiler_and_tester_for_each_lang"), test_dir)
+        config_path = os.path.join(
+            RESOURCE_DIR, "test_compiler_and_tester_for_each_lang", "config.toml")
+        for lang in ALL_LANGUAGES:
+            lang_dir = os.path.join(test_dir, lang.name)
+
+            compile_main_and_judge_programs(
+                lang, force_compile=True, cwd=lang_dir)
+            for i in [1, 2, 3, 4]:
+                self.assertTrue(tester.main(
+                    '', ['-d', lang_dir, "-n", "{:d}".format(i), "--compile-before-testing", "-j", "normal",
+                         "--config", config_path]))
+
+    def test_compiler_when_compiler_command_is_specified_in_option_file(self):
+        test_dir = os.path.join(self.temp_dir, "test")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_compiler_when_compiler_command_is_specified_in_option_file"), test_dir)
+        config_path = os.path.join(
+            RESOURCE_DIR, "test_compiler_when_compiler_command_is_specified_in_option_file", "tester_options.toml")
+        f = io.StringIO()
+        sys.stdout = f
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "--compile-before-testing",
+                 "-j", "normal",
+                 "--config", config_path]))
+        sys.stdout = sys.__stdout__
+        stdouts = f.getvalue().split("\n")
+        self.assertTrue(
+            True if "compile command:  g++ main.cpp -o main -std=c++17" in stdouts else False)
+
+    def test_timeout(self):
+        test_dir = os.path.join(self.temp_dir, "test_timeout")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_timeout"), test_dir)
+        # main.cppは5秒間停止た後に正しい答えを返す
+        # timeoutは5.252秒になっている
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "--compile-before-testing",
+                 "-j", "normal",
+                 "--compile-command", "g++ main.cpp -o main"]))
+        self.assertFalse(tester.main(
+            '', ['-d', test_dir, "--compile-before-testing",
+                 "-j", "normal", "-t", "4",
+                 "--compile-command", "g++ main.cpp -o main"]))
+        self.assertTrue(tester.main(
+            '', ['-d', test_dir, "--compile-before-testing",
+                 "-j", "normal", "-t", "6",
+                 "--compile-command", "g++ main.cpp -o main"]))
+        config_path = os.path.join(test_dir, "config_timeout_adjustment.toml")
+        self.assertFalse(tester.main(
+            '', ['-d', test_dir, "--compile-before-testing",
+                 "-j", "normal",
+                 "--compile-command", "g++ main.cpp -o main",
+                 "--config", config_path]))
+
+    def test_timeout_fail(self):
+        test_dir = os.path.join(self.temp_dir, "test_timeout_fail")
+        shutil.copytree(os.path.join(
+            RESOURCE_DIR, "test_timeout_fail"), test_dir)
+        self.assertFalse(tester.main(
+            '', ['-d', test_dir, "--compile-before-testing",
+                 "-j", "normal",
+                 "--compile-command", "g++ main.cpp -o main"]))
 
 
 if __name__ == '__main__':

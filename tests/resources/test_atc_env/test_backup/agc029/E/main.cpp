@@ -1,6 +1,29 @@
-#include <bits/stdc++.h>
+<<<<<<< HEAD
+#include<iostream>
+#include<vector>
+#include<string>
+=======
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <set>
+#include <map>
+#include <algorithm>
+#include <functional>
+#include <utility>
+#include <bitset>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <cstdio>
 using namespace std;
 
+>>>>>>> test_fmtprediction
 
 void solve(long long N, std::vector<long long> a, std::vector<long long> b){
 
@@ -8,12 +31,21 @@ void solve(long long N, std::vector<long long> a, std::vector<long long> b){
 
 int main(){
     long long N;
-    scanf("%lld",&N);
+<<<<<<< HEAD
+    std::cin >> N;
     std::vector<long long> a(N-1);
     std::vector<long long> b(N-1);
     for(int i = 0 ; i < N-1 ; i++){
-        scanf("%lld",&a[i]);
-        scanf("%lld",&b[i]);
+        std::cin >> a[i];
+        std::cin >> b[i];
+=======
+    std::scanf("%lld", &N);
+    std::vector<long long> a(N-1);
+    std::vector<long long> b(N-1);
+    for(int i = 0 ; i < N-1 ; i++){
+        std::scanf("%lld", &a[i]);
+        std::scanf("%lld", &b[i]);
+>>>>>>> test_fmtprediction
     }
     solve(N, std::move(a), std::move(b));
     return 0;
