@@ -9,13 +9,8 @@ from atcodertools.tools.envgen import main as envgen_main
 from atcodertools.tools.tester import main as tester_main
 from atcodertools.tools.submit import main as submit_main
 from atcodertools.tools.codegen import main as codegen_main
-<<<<<<< HEAD
-from atcodertools.tools.setter import main as setter_main
-from atcodertools.tools.compiler import main as compiler_main
-=======
 from atcodertools.tools.compiler import main as compiler_main
 from atcodertools.tools.setter import main as setter_main
->>>>>>> test_fmtprediction
 from atcodertools.release_management.version import __version__
 from colorama import Fore, Style
 
@@ -45,14 +40,12 @@ def notify_if_latest_version_found():
 def main():
     notify_if_latest_version_found()
 
-<<<<<<< HEAD
-    if len(sys.argv) < 2 or sys.argv[1] not in ("gen", "test", "submit", "codegen", "set", "version", "compile"):
-        print("Usage:")
-        print("{} gen -- to generate workspace".format(sys.argv[0]))
-=======
     if len(sys.argv) < 2 or sys.argv[1] not in ("gen", "test", "submit", "codegen", "compile", "set", "version"):
         print("Usage:")
         print("{} gen -- to generate workspace".format(sys.argv[0]))
+        print(
+            "{} compile -- to compile codes in your workspace".format(sys.argv[0]))
+        print("{} test -- to test codes in your workspace".format(sys.argv[0]))
         print(
             "{} compile -- to compile codes in your workspace".format(sys.argv[0]))
         print("{} test -- to test codes in your workspace".format(sys.argv[0]))
@@ -67,6 +60,8 @@ def main():
             "{} set -- switch program language/judge method".format(sys.argv[0]))
         print(
             "{} codegen -- to generate code of the specified single problem".format(sys.argv[0]))
+        print(
+            "{} set -- to set some additional option(error value, language)".format(sys.argv[0]))
         print(
             "{} set -- to set some additional option(error value, language)".format(sys.argv[0]))
         print(
@@ -88,21 +83,12 @@ def main():
     if sys.argv[1] == "codegen":
         codegen_main(prog, args)
 
-<<<<<<< HEAD
-    if sys.argv[1] == "set":
-        setter_main(prog, args)
-
-    if sys.argv[1] == "compile":
-        compiler_main(prog, args)
-
-=======
     if sys.argv[1] == "compile":
         compiler_main(prog, args)
 
     if sys.argv[1] == "set":
         setter_main(prog, args)
 
->>>>>>> test_fmtprediction
     if sys.argv[1] == "version":
         print(__version__)
 

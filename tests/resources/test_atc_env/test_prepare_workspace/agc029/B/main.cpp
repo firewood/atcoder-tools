@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-#include<iostream>
-#include<vector>
-#include<string>
-=======
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -31,17 +26,10 @@ void solve(long long N, std::vector<long long> A){
 
 int main(){
     long long N;
-<<<<<<< HEAD
-    scanf("%lld", &N);
-    std::vector<long long> A(N);
-    for(int i = 0 ; i < N ; i++){
-        scanf("%lld", &A[i]);
-=======
     std::scanf("%lld", &N);
     std::vector<long long> A(N);
     for(int i = 0 ; i < N ; i++){
         std::scanf("%lld", &A[i]);
->>>>>>> test_fmtprediction
     }
     solve(N, std::move(A));
     return 0;

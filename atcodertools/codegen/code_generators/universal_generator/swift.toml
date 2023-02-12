@@ -13,31 +13,19 @@ footer = "}}"
 [type]
 int = "Int"
 float = "Double"
-<<<<<<< HEAD
-string = "String"
-=======
 str = "String"
->>>>>>> test_fmtprediction
 
 # デフォルト値
 [default]
 int = "0"
 float = "0.0"
-<<<<<<< HEAD
-string = '""'
-=======
 str = '""'
->>>>>>> test_fmtprediction
 
 # 宣言
 [declare]
 int = "let {name}:Int"
 float = "let {name}:Double"
-<<<<<<< HEAD
-string = "let {name}:String"
-=======
 str = "let {name}:String"
->>>>>>> test_fmtprediction
 seq = "var {name}:[{type}]"
 2d_seq = "var {name}:[[{type}]]"
 
@@ -53,21 +41,6 @@ seq = "var {name} = [{type}](repeating: {default}, count: {length})"
 [input_func]
 int = "readInt()"
 float = "readDouble()"
-<<<<<<< HEAD
-string = "readString()"
-
-# 入力
-[input]
-int = "{name} = readInt()"
-float = "{name} = readDouble()"
-string = "{name} = readString()"
-
-# 宣言と入力
-[declare_and_input]
-int = "let {name} = readInt()"
-float = "let {name} = readDouble()"
-string = "let {name} = readString()"
-=======
 str = "readString()"
 
 # 入力
@@ -81,25 +54,16 @@ str = "{name} = {input_func}"
 int = "let {name} = {input_func}"
 float = "let {name} = {input_func}"
 str = "let {name} = {input_func}"
->>>>>>> test_fmtprediction
 
 # 引数
 [arg]
 int = "_ {name}:Int"
 float = "_ {name}:Double"
-<<<<<<< HEAD
-string = "_ {name}:String"
-=======
 str = "_ {name}:String"
->>>>>>> test_fmtprediction
 seq = "_ {name}:[{type}]"
 2d_seq = "_ {name}:[[{type}]]"
 
 # 配列アクセス
 [access]
-<<<<<<< HEAD
-seq = "{name}[{index_i}]"
-=======
 seq = "{name}[{index}]"
->>>>>>> test_fmtprediction
 2d_seq = "{name}[{index_i}][{index_j}]"

@@ -3,11 +3,7 @@ insert_space_around_operators = false
 
 # global変数宣言時の接頭辞
 global_prefix = "static "
-<<<<<<< HEAD
-#input_part_prefix = "final Scanner sc = new Scanner(System.in);"
-=======
 input_part_prefix = "final Scanner sc = new Scanner(System.in);"
->>>>>>> test_fmtprediction
 
 # ループ
 [loop]
@@ -18,19 +14,12 @@ footer = "}}"
 [type]
 int = "long"
 float = "double"
-<<<<<<< HEAD
-string = "String"
-=======
 str = "String"
->>>>>>> test_fmtprediction
 
 # デフォルト値
 [default]
 int = "0"
 float = "0.0"
-<<<<<<< HEAD
-string = "\"\""
-=======
 str = '""'
 
 # 引数
@@ -45,17 +34,12 @@ seq = "{type}[] {name}"
 [access]
 seq = "{name}[{index}]"
 2d_seq = "{name}[{index_i}][{index_j}]"
->>>>>>> test_fmtprediction
 
 # 宣言
 [declare]
 int = "long {name};"
 float = "double {name};"
-<<<<<<< HEAD
-string = "String {name};"
-=======
 str = "String {name};"
->>>>>>> test_fmtprediction
 seq = "{type} {name}[];"
 2d_seq = "{type} {name}[][];"
 
@@ -73,30 +57,11 @@ seq = "{type}[] {name} = new {type}[(int)({length})];"
 [input]
 int = "{name} = sc.nextLong();"
 float = "{name} = sc.nextDouble();"
-<<<<<<< HEAD
-string = "{name} = sc.next();"
-=======
 str = "{name} = sc.next();"
->>>>>>> test_fmtprediction
 seq = """for(int i = 0;i < {length};i++)
     {input}"""
 2d_seq = """for(int i = 0;i <{length_i};i++)
     for(int j = 0;j <{length_j};j++)
         {input}"""
 
-<<<<<<< HEAD
-# 引数
-[arg]
-int = "long {name}"
-float = "double {name}"
-string = "String {name}"
-seq = "{type}[] {name}"
-2d_seq = "{type}[][] {name}"
 
-# 配列アクセス
-[access]
-seq = "{name}[{index_i}]"
-2d_seq = "{name}[{index_i}][{index_j}]"
-=======
-
->>>>>>> test_fmtprediction

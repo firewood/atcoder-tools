@@ -28,11 +28,7 @@ int main(){
     std::scanf("%lld", &N);
     std::vector<long long> A(N);
     for(int i = 0 ; i < N ; i++){
-<<<<<<< HEAD
-        scanf("%lld", &A[i]);
-=======
         std::scanf("%lld", &A[i]);
->>>>>>> test_fmtprediction
     }
     solve(N, std::move(A));
     return 0;

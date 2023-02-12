@@ -26,15 +26,6 @@ void solve(long long N, long long M, long long A, long long B){
 }
 int main(){
     long long N;
-<<<<<<< HEAD
-    scanf("%lld", &N);
-    long long M;
-    scanf("%lld", &M);
-    long long A;
-    scanf("%lld", &A);
-    long long B;
-    scanf("%lld", &B);
-=======
     std::scanf("%lld", &N);
     long long M;
     std::scanf("%lld", &M);
@@ -42,7 +33,6 @@ int main(){
     std::scanf("%lld", &A);
     long long B;
     std::scanf("%lld", &B);
->>>>>>> test_fmtprediction
     solve(N, M, A, B);
     return 0;
 }

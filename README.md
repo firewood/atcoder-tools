@@ -294,6 +294,7 @@ optional arguments:
 - `run_command="./main.out"` コンパイルしたプログラムを`atcoder-tools test`で実行する場合に実行されるコマンド
 
 
+
 ```toml
 [codestyle]
 indent_type='space' # 'tab' or 'space'
@@ -305,13 +306,6 @@ code_generator_file="~/custom_code_generator.py"
 [postprocess]
 exec_on_each_problem_dir='clang-format -i ./*.cpp'
 exec_on_contest_dir='touch CMakeLists.txt'
-<<<<<<< HEAD
-
-[run]
-compile_command="g++ main.cpp -o main.out"
-run_command="./main.out"
-
-=======
 [compiler]
 compile_command='g++ main.cpp -o main -std=c++17'
 compile_only_when_diff_detected=true
@@ -319,7 +313,6 @@ compile_only_when_diff_detected=true
 compile_before_testing=true
 compile_only_when_diff_detected=true
 timeout_adjustment=1.2
->>>>>>> test_fmtprediction
 [etc]
 download_without_login=false
 parallel_download=false
@@ -327,39 +320,6 @@ save_no_session_cache=false
 skip_existing_problems=false
 in_example_format="in_{}.txt"
 out_example_format="out_{}.txt"
-<<<<<<< HEAD
-compile_before_testing=false
-compile_only_when_diff_detected=false
-
-```
-
-### 言語毎の設定
-バージョン1.1.7以降では、言語毎に`codestyle`, `postprocess`, `run`を指定できます。
-
-`(言語名).(設定カテゴリ名)`に対して設定を行うと、言語毎の設定になります。言語名が無い場合の通常の指定は共通のデフォルト設定として扱われます。
-atcoder-tools起動時に使われる言語固有の設定は、`--lang` プログラム引数が存在すればそれを、なければ`codestyle.lang`に指定された値に基づきます。
-`(言語名).codestyle.lang`は無視されます。
-
-以下の設定では、
-- 共通のコードスタイルとしてインデント幅が4のスペースインデントを用いる。`--lang`引数無しで起動した際に使用される言語はPythonである。ただし
-   - c++のコード生成においてはタブインデントを用い(幅は4のまま)、加えてC++用のpostprocess設定を用いる。
-   - Pythonのコード生成においてはインデント幅を2とする。
-```toml
-[codestyle]
-lang='python'
-indent_type='space'
-indent_width=4
-[cpp.codestyle]
-indent_type='tab'
-code_generator_file="~/custom_code_generator.py"
-[cpp.postprocess]
-exec_on_each_problem_dir='clang-format -i ./*.cpp'
-exec_on_contest_dir='touch CMakeLists.txt'
-[java.run]
-
-[python.codestyle]
-indent_width=2
-=======
 ```
 
 また、以下のように提出時にコマンドを実行してその結果を提出することが可能です。C++以外のAC-libraryを自動に展開するような用途で用いることができます。下記の例はNim言語でACLのexpanderを実行しその出力ファイルを提出し、その後ローカルの出力ファイルを削除するという設定です。
@@ -374,7 +334,6 @@ indent_width=2
 exec_before_submit='rm ./combined.nim | python3 ~/git/Nim-ACL/expander.py main.nim --lib /home/chaemon/git/Nim-ACL/ -s'
 exec_after_submit='rm ./combined.nim'
 submit_filename='./combined.nim'
->>>>>>> test_fmtprediction
 ```
 
 
@@ -382,36 +341,15 @@ submit_filename='./combined.nim'
 [標準のC++コードジェネレーター](https://github.com/kyuridenamida/atcoder-tools/blob/master/atcodertools/codegen/code_generators/cpp.py)に倣って、
 `(CogeGenArgs) -> str(ソースコード)`が型であるような`main`関数を定義した.pyファイルを`code_generator_file`で指定すると、コード生成時にカスタムコードジェネレーターを利用できます。
 
-<<<<<<< HEAD
-### ユニバーサルコードジェネレーター
-ユニバーサルコードジェネレータはループ・配列アクセス方法等のいくつかの言語仕様を記述するだけでカスタムコードジェネレータよりも簡単にコード生成することを意図して作成したジェネレータです。設定ファイル`(言語名).toml`を`atcodertools/codegen/code_generators/universal_generator`に配置してください。設定ファイルの書き方は以下です。
-=======
 
 ### ユニバーサルコードジェネレーター
 ユニバーサルコードジェネレーターはループ・配列アクセス方法等のいくつかの言語仕様を記述するだけでカスタムコードジェネレーターよりも簡単にコード生成することを意図して作成したジェネレーターです。設定ファイルの`code_generator_toml`で指定します。書き方は以下です。
->>>>>>> test_fmtprediction
 
 - *base_indent* 入力部分のインデント数
 - *insert_space_around_operators* 入力部分の変数や演算子の間にスペースを入れるかどうかをtrue/falseで指定
 - *newline_after_input* 入力部分で入力ごとに空行を入れるかどうかをtrue/falseで指定
 - *global_prefix* グローバル変数の宣言時に入れる接頭辞(Javaなどでstaticを指定したりできます)
 
-<<<<<<< HEAD
-以下のようにテーブルを定義します
-
-- *[index]* ループインデックスの名称を指定します。１重目を`i`, 2重目を`j`で指定してください。省略可能で省略した場合はi, jが指定されます。perl, phpなどの言語で$i, $jなどとi, j以外の名前を指定しなければならないとき用のつもりです。
-- *[loop]* ループに関することを記述します
-    - **header** ループの最初に記述する内容。ループを回すための変数は`{loop_var}`, 回す回数は`{length}`を用いてください。
-    - **footer** ループの最後に記述する内容。C++, Javaでは閉じカッコになります。波括弧の場合は`}}`とエスケープする必要があることに注意してください。
-- *[type]* タイプ(int, float, string)のタイプについて記述します。例を参照してください。
-- *[default]* デフォルトの値について記述します。例を参照してください。
-- *[declare]* int, float, string, 1次元可変配列(以下`seq`), 2次元可変配列(以下`2d_seq`)の宣言方法について記述します。変数名は`{name}`を使ってください。可変配列のベースとなるタイプは`{type}`を使ってください。
-- *[allocate]* `seq`, `2d_seq`の確保の方法を記述します。ベースとなるタイプは`{type}`, 変数名は`{name}`, デフォルト値は`{default}`で指定します。タイプ、デフォルト値は上記で指定したものが入ります。長さについてはseqは`{length}`で、`2d_seq`は1番目の長さは`{length_i}`, 2番目の長さは`{length_j}`となります。順番を間違えると転置されるのでご注意ください。
-- *[declare_and_allocate]* `seq`, `2d_seq`について宣言と確保を同時に行う方法について記述します。フォーマットに使用されるものは`[allocate]`と同じです。
-- *[input]*
-
-- *[arg]* solve関数の引数の記述方法について指定します。`int`, `float`, `string`, `seq`, `2d_seq`について記述してください。`{name}`が変数名, `{type}`が`seq`, `2d_seq`についてベースとなる型です。
-=======
 以下のようにテーブルを定義します。各項目はダブルコーテーションあるいはシングルコーテーションを用いた文字列で指定します。Pythonのformatメソッドに渡されるため、波括弧等の文字を直に書きたい場合はエスケープする必要があります。
 テーブルのキーは整数(int), 浮動小数(float), 文字列(str), およびこれら3つを使った1次元配列(seq), 2次元配列(2d_seq)となっています。
 
@@ -423,16 +361,10 @@ submit_filename='./combined.nim'
 - *[default]* デフォルトの値について記述します。例を参照してください。注意: TOMLの表記に癖があるようで、ダブルコーテーション2つ(空の文字列)を表記する際にはstr='""'とするとよいようです。"\"\""だとエラーになるようです。
 - *[input_func]* int, float, strについて入力時に呼び出す関数を記述します。
 - *[arg]* solve関数の引数の記述方法について指定します。`int`, `float`, `str`, `seq`, `2d_seq`について記述してください。`{name}`が変数名, `{type}`が`seq`, `2d_seq`についてベースとなる型です。
->>>>>>> test_fmtprediction
 - *[actual_arg]* `seq`, `2d_seq`についてsolve関数を呼び出す際の引数の渡し方について記述します。C++などでmoveをつかってメモリを節約したいときなどに指定できます。省略可能で、省略した場合はそのまま渡されます。
 
 - *[access]* 配列のアクセス方法について記述します。`seq`, `2d_seq`について指定してください。`{name}`で変数名, `{index_i}`, `{index_j}`でインデックス名を指定します。
 
-<<<<<<< HEAD
-以下は入力コードの冗長性を下げる目的で指定するテーブルで省略可能なものです。指定方法についてはpythonの設定を参照してください。
-
-- *[input_func]* int, float, stringについて入力時に呼び出す関数を記述します。
-=======
 
 以下は宣言・確保・入力を行うためのコードを記述します。いくつかを同時に行う方法も指定できます。いずれも一行または複数行に渡る指定が可能でセミコロン等の終端子も(必要な言語では)記述してください。
 キーワードとして`{name}`, `{type}`はそれぞれ対象となる変数名、タイプ名で、上記で指定した`{default}`が使えます。また、指定していれば`{input_func}`も使えます。`seq`, `2d_seq`の場合は`{type}`はベースとなる型名になります(`vector<int>`における`int`)のでご注意ください。また、`seq`の長さは`{length}`, `2d_seq`の長さは`{length_i}`, `{length_j}`となっています。
@@ -444,7 +376,6 @@ submit_filename='./combined.nim'
 
 以下は入力コードの冗長性を下げる目的で指定するテーブルで省略可能なものです。指定方法についてはPythonの設定を参照してください。
 
->>>>>>> test_fmtprediction
 - *[allocate_and_input]* `seq`, `2d_seq`について確保と入力をまとめて行うことができる場合に記述します。省略した場合、上記で指定した確保と入力の方式を複合したものが挿入されます
 - *[declare_and_allocate_and_input]* `seq`, `2d_seq`について宣言・確保・入力をまとめて行うことができる場合に記述します。省略した場合、上記で指定した宣言と確保と入力の方式を複合したものが挿入されます
 
@@ -465,19 +396,12 @@ footer = "}}"
 [type]
 int = "long long"
 float = "long double"
-<<<<<<< HEAD
-string = "std::string"
-=======
 str = "std::string"
->>>>>>> test_fmtprediction
 
 # デフォルト値
 [default]
 int = "0"
 float = "0.0"
-<<<<<<< HEAD
-string = "\"\""
-=======
 str = '""'
 
 # 引数
@@ -497,19 +421,13 @@ seq = "std::move({name})"
 [access]
 seq = "{name}[{index}]"
 2d_seq = "{name}[{index_i}][{index_j}]"
->>>>>>> test_fmtprediction
 
 # 宣言
 [declare]
 int = "long long {name};"
 float = "long double {name};"
-<<<<<<< HEAD
-string = "std::string {name};"
-seq = "std::std::vector<{type}> {name};"
-=======
 str = "std::string {name};"
 seq = "std::vector<{type}> {name};"
->>>>>>> test_fmtprediction
 2d_seq = "std::vector<std::vector<{type}>> {name};"
 
 # 確保
@@ -525,33 +443,6 @@ seq = "std::vector<{type}> {name}({length});"
 # 入力
 [input]
 #int = "std::cin >> {name};"
-<<<<<<< HEAD
-int = "scanf(\"%lld\",&{name});"
-#float = "std::cin >> {name};"
-float = "scanf(\"%Lf\",&{name});"
-string = "std::cin >> {name};"
-
-# 引数
-[arg]
-int = "long long {name}"
-float = "double {name}"
-string = "std::string {name}"
-seq = "std::vector<{type}> {name}"
-2d_seq = "std::vector<std::vector<{type}>> {name}"
-
-# 引数への渡し方
-[actual_arg]
-seq = "std::move({name})"
-2d_seq = "std::move({name})"
-
-# 配列アクセス
-[access]
-seq = "{name}[{index_i}]"
-2d_seq = "{name}[{index_i}][{index_j}]"
-```
-
-例えばpythonでの設定方法は以下です。
-=======
 int = "std::scanf(\"%lld\", &{name});"
 #float = "std::cin >> {name};"
 float = "std::scanf(\"%Lf\", &{name});"
@@ -559,7 +450,6 @@ str = "std::cin >> {name};"
 ```
 
 例えばPythonでの設定方法は以下です。
->>>>>>> test_fmtprediction
 ```toml
 base_indent = 1
 insert_space_around_operators = true
@@ -581,31 +471,19 @@ footer = ""
 [type]
 int = "int"
 float = "float"
-<<<<<<< HEAD
-string = "str"
-=======
 str = "str"
->>>>>>> test_fmtprediction
 
 # デフォルト値
 [default]
 int = "int()"
 float = "float()"
-<<<<<<< HEAD
-string = "str()"
-=======
 str = "str()"
->>>>>>> test_fmtprediction
 
 # 宣言
 [declare]
 int = ""
 float = ""
-<<<<<<< HEAD
-string = ""
-=======
 str = ""
->>>>>>> test_fmtprediction
 seq = ""
 2d_seq = ""
 
@@ -623,21 +501,6 @@ self.declare_and_allocate_2d_seq = "{name} = [[{default}] * ({length_j}) for _ i
 [input_func]
 int = "int(next(tokens))"
 float = "float(next(tokens))"
-<<<<<<< HEAD
-string = "next(tokens)"
-
-# 入力
-[input]
-int = "{name} = int(next(tokens))"
-float = "{name} = float(next(tokens))"
-string = "{name} = next(tokens)"
-
-# 宣言と入力
-[declare_and_input]
-int = "{name} = int(next(tokens))  # type: int"
-float = "{name} = float(next(tokens))  # type: float"
-string = "{name} = next(tokens)  # type: str"
-=======
 str = "next(tokens)"
 
 # 入力
@@ -651,7 +514,6 @@ str = "{name} = {input_func}"
 int = "{name} = {input_func}  # type: int"
 float = "{name} = {input_func}  # type: float"
 str = "{name} = {input_func}  # type: str"
->>>>>>> test_fmtprediction
 
 # 確保と入力
 [allocate_and_input]
@@ -667,21 +529,13 @@ seq = "{name} = [{input_func} for _ in range({length})]  # type: \"List[{type}]\
 [arg]
 int = "{name}: int"
 float = "{name}: float"
-<<<<<<< HEAD
-string = "{name}: str"
-=======
 str = "{name}: str"
->>>>>>> test_fmtprediction
 seq = "{name}: \"List[{type}]\""
 2d_seq = "{name}: \"List[List[{type}]]\""
 
 # 配列アクセス
 [access]
-<<<<<<< HEAD
-seq = "{name}[{index_i}]"
-=======
 seq = "{name}[{index}]"
->>>>>>> test_fmtprediction
 2d_seq = "{name}[{index_i}][{index_j}]"
 ```
 

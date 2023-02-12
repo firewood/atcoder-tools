@@ -14,19 +14,12 @@ footer = "}}"
 [type]
 int = "long"
 float = "double"
-<<<<<<< HEAD
-string = "string"
-=======
 str = "string"
->>>>>>> test_fmtprediction
 
 # デフォルト値
 [default]
 int = "long()"
 float = "double()"
-<<<<<<< HEAD
-string = "string()"
-=======
 str = "string()"
 
 # 入力関数
@@ -47,17 +40,12 @@ seq = "{type}[] {name}"
 [access]
 seq = "{name}[{index}]"
 2d_seq = "{name}[{index_i},{index_j}]"
->>>>>>> test_fmtprediction
 
 # 宣言
 [declare]
 int = "long {name};"
 float = "double {name};"
-<<<<<<< HEAD
-string = "string {name};"
-=======
 str = "string {name};"
->>>>>>> test_fmtprediction
 seq = "{type}[] {name};"
 2d_seq = "{type}[,] {name};"
 
@@ -71,35 +59,8 @@ seq = "{name} = new {type}[{length}];"
 seq = "{type}[] {name} = new {type}[{length}];"
 2d_seq = "{type}[,] {name} = new {type}[{length_i},{length_j}];"
 
-<<<<<<< HEAD
-# 入力関数
-[input_func]
-int = "cin.ReadLong;"
-float = "cin.ReadDouble;"
-string = "cin.Read;"
-
-# 入力
-[input]
-int = "{name} = cin.ReadLong;"
-float = "{name} = cin.ReadDouble;"
-string = "{name} = cin.Read;"
-
-# 引数
-[arg]
-int = "long {name}"
-float = "double {name}"
-string = "string {name}"
-seq = "{type}[] {name}"
-2d_seq = "{type}[,] {name}"
-
-# 配列アクセス
-[access]
-seq = "{name}[{index_i}]"
-2d_seq = "{name}[{index_i},{index_j}]"
-=======
 # 入力
 [input]
 int = "{name} = {input_func};"
 float = "{name} = {input_func};"
 str = "{name} = {input_func};"
->>>>>>> test_fmtprediction

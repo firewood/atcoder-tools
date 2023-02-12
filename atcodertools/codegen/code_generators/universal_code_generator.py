@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 # -*- coding: utf-8 -*-
->>>>>>> test_fmtprediction
 from typing import Dict, Any, Optional
 import re
 
@@ -18,29 +15,16 @@ class UniversalCodeGenerator():
     def __init__(self,
                  format_: Optional[Format[Variable]],
                  config: CodeStyleConfig,
-<<<<<<< HEAD
-                 lang):
-        super(UniversalCodeGenerator, self).__init__()
-        self._format = format_
-        self._config = config
-        self.info = toml.load(
-            Path(__file__).parent / "universal_generator" / "{lang}.toml".format(lang=lang))
-=======
                  path):
         super(UniversalCodeGenerator, self).__init__()
         self._format = format_
         self._config = config
         self.info = toml.load(path)
->>>>>>> test_fmtprediction
         if "index" not in self.info:
             self.info["index"] = {"i": "i", "j": "j"}
 
     def _get_length(self, index) -> str:
-<<<<<<< HEAD
-        return self._insert_space_around_operators(index.get_length())
-=======
         return self._insert_space_around_operators(str(index.get_length()))
->>>>>>> test_fmtprediction
 
     def _loop_header(self, var: Variable, for_second_index: bool):
         if for_second_index:
@@ -55,16 +39,9 @@ class UniversalCodeGenerator():
             length=self._get_length(index)
         )
 
-<<<<<<< HEAD
-    def _insert_space_around_operators(self, code):
-        if not self.info["insert_space_around_operators"]:
-            return code
-        code = str(code)
-=======
     def _insert_space_around_operators(self, code: str):
         if not self.info["insert_space_around_operators"]:
             return code
->>>>>>> test_fmtprediction
         precode = code
         pattern = r"([0-9a-zA-Z_])([+\-\*/])([0-9a-zA-Z_])"
         code = re.sub(pattern, r"\1 \2 \3", code)
@@ -122,24 +99,6 @@ class UniversalCodeGenerator():
         return result
 
     def _convert_type(self, type_: Type) -> str:
-<<<<<<< HEAD
-        if type_ == Type.float:
-            return self.info["type"]["float"]
-        elif type_ == Type.int:
-            return self.info["type"]["int"]
-        elif type_ == Type.str:
-            return self.info["type"]["string"]
-        else:
-            raise NotImplementedError
-
-    def _default_val(self, type_: Type) -> str:
-        if type_ == Type.float:
-            return self.info["default"]["float"]
-        elif type_ == Type.int:
-            return self.info["default"]["int"]
-        elif type_ == Type.str:
-            return self.info["default"]["string"]
-=======
         return self.info["type"][type_.value]
 
     def _default_val(self, type_: Type) -> str:
@@ -172,30 +131,13 @@ class UniversalCodeGenerator():
             return "seq"
         elif var.dim_num() == 2:
             return "2d_seq"
->>>>>>> test_fmtprediction
         else:
             raise NotImplementedError
 
     def _get_argument(self, var: Variable):
-<<<<<<< HEAD
-        if var.dim_num() == 0:
-            if var.type == Type.float:
-                return self.info["arg"]["float"].format(name=var.name)
-            elif var.type == Type.int:
-                return self.info["arg"]["int"].format(name=var.name)
-            elif var.type == Type.str:
-                return self.info["arg"]["string"].format(name=var.name)
-            else:
-                raise NotImplementedError
-        elif var.dim_num() == 1:
-            return self.info["arg"]["seq"].format(name=var.name, type=self._convert_type(var.type))
-        elif var.dim_num() == 2:
-            return self.info["arg"]["2d_seq"].format(name=var.name, type=self._convert_type(var.type))
-=======
         kwd = self._get_format_keywords(var)
         kind = self._get_variable_kind(var)
         return self.info["arg"][kind].format(**kwd)
->>>>>>> test_fmtprediction
 
     def _actual_arguments(self) -> str:
         """
@@ -205,24 +147,11 @@ class UniversalCodeGenerator():
         for v in self._format.all_vars():
             if v.dim_num() == 0:
                 ret.append(v.name)
-<<<<<<< HEAD
-            elif v.dim_num() == 1:
-                if "actual_arg" in self.info:
-                    ret.append(
-                        self.info["actual_arg"]["seq"].format(name=v.name))
-                else:
-                    ret.append(v.name)
-            elif v.dim_num() == 2:
-                if "actual_arg" in self.info:
-                    ret.append(
-                        self.info["actual_arg"]["2d_seq"].format(name=v.name))
-=======
             else:
                 kind = self._get_variable_kind(v)
                 if "actual_arg" in self.info:
                     ret.append(
                         self.info["actual_arg"][kind].format(name=v.name))
->>>>>>> test_fmtprediction
                 else:
                     ret.append(v.name)
         return ", ".join(ret)
@@ -237,118 +166,25 @@ class UniversalCodeGenerator():
         """
         :return: Create declaration part E.g. array[1..n] -> std::vector<int> array = std::vector<int>(n-1+1);
         """
-<<<<<<< HEAD
-        if var.dim_num() == 0:
-            if var.type == Type.int:
-                return self.info["declare"]["int"].format(name=var.name)
-            elif var.type == Type.float:
-                return self.info["declare"]["float"].format(name=var.name)
-            elif var.type == Type.str:
-                return self.info["declare"]["string"].format(name=var.name)
-            else:
-                raise NotImplementedError
-        elif var.dim_num() == 1:
-            return self.info["declare"]["seq"].format(name=var.name,
-                                                      type=self._convert_type(
-                                                          var.type),
-                                                      length=self._get_length(var.first_index))
-        elif var.dim_num() == 2:
-            return self.info["declare"]["2d_seq"].format(name=var.name,
-                                                         type=self._convert_type(
-                                                             var.type),
-                                                         length_i=self._get_length(
-                                                             var.first_index),
-                                                         length_j=self._get_length(var.second_index))
-=======
         kwd = self._get_format_keywords(var)
         kind = self._get_variable_kind(var)
         return self.info["declare"][kind].format(**kwd)
->>>>>>> test_fmtprediction
 
     def _generate_allocation(self, var: Variable):
         """
         :return: Create allocation part E.g. array[1..n] -> std::vector<int> array = std::vector<int>(n-1+1);
         """
-<<<<<<< HEAD
-        if var.dim_num() == 0:
-            return ""
-        elif var.dim_num() == 1:
-            return self.info["allocate"]["seq"].format(name=var.name,
-                                                       length=self._get_length(
-                                                           var.first_index),
-                                                       default=self._default_val(
-                                                           var.type),
-                                                       type=self._convert_type(var.type))
-        elif var.dim_num() == 2:
-            return self.info["allocate"]["2d_seq"].format(name=var.name,
-                                                          type=self._convert_type(
-                                                              var.type),
-                                                          length_i=self._get_length(
-                                                              var.first_index),
-                                                          length_j=self._get_length(
-                                                              var.second_index),
-                                                          default=self._default_val(var.type))
-        else:
-            raise NotImplementedError
-=======
         if var.dim_num() == 0:  # ほとんどの言語ではint, float, stringは宣言したら確保もされるはず、そうでない言語だったらこれだとまずそう
             return ""
         else:
             kwd = self._get_format_keywords(var)
             kind = self._get_variable_kind(var)
             return self.info["allocate"][kind].format(**kwd)
->>>>>>> test_fmtprediction
 
     def _generate_declaration_and_allocation(self, var: Variable):
         """
         :return: Create declaration part E.g. array[1..n] -> std::vector<int> array = std::vector<int>(n-1+1);
         """
-<<<<<<< HEAD
-        if var.dim_num() == 0:
-            if var.type == Type.int:
-                return self.info["declare"]["int"].format(name=var.name)
-            elif var.type == Type.float:
-                return self.info["declare"]["float"].format(name=var.name)
-            elif var.type == Type.str:
-                return self.info["declare"]["string"].format(name=var.name)
-            else:
-                raise NotImplementedError
-        elif var.dim_num() == 1:
-            return self.info["declare_and_allocate"]["seq"].format(name=var.name,
-                                                                   type=self._convert_type(
-                                                                       var.type),
-                                                                   length=self._get_length(
-                                                                       var.first_index),
-                                                                   default=self._default_val(var.type))
-        elif var.dim_num() == 2:
-            return self.info["declare_and_allocate"]["2d_seq"].format(name=var.name,
-                                                                      type=self._convert_type(
-                                                                          var.type),
-                                                                      length_i=self._get_length(
-                                                                          var.first_index),
-                                                                      length_j=self._get_length(
-                                                                          var.second_index),
-                                                                      default=self._default_val(var.type))
-
-    def _get_input_func(self, type: Type) -> str:
-        if type == Type.float:
-            return self.info["input_func"]["float"]
-        elif type == Type.int:
-            return self.info["input_func"]["int"]
-        elif type == Type.str:
-            return self.info["input_func"]["string"]
-
-    def _input_code_for_var(self, var: Variable) -> str:
-        name = self._get_var_name(var)
-        if var.type == Type.float:
-            return self.info["input"]["float"].format(name=name)
-        elif var.type == Type.int:
-            return self.info["input"]["int"].format(name=name)
-        elif var.type == Type.str:
-            return self.info["input"]["string"].format(name=name)
-        else:
-            raise NotImplementedError
-=======
         if var.dim_num() == 0:  # ほとんどの言語ではint, float, stringは宣言したら確保もされるはず、そうでない言語だったらこれだとまずそう
             return self.info["declare"][var.type.value].format(name=var.name)
         else:
@@ -360,18 +196,13 @@ class UniversalCodeGenerator():
         kwd = self._get_format_keywords(var)
         kwd["name"] = self._get_var_name(var)
         return self.info["input"][var.type.value].format(**kwd)
->>>>>>> test_fmtprediction
 
     def _get_var_name(self, var: Variable):
         name = var.name
         if var.dim_num() == 0:
             return name
         elif var.dim_num() == 1:
-<<<<<<< HEAD
-            return self.info["access"]["seq"].format(name=name, index_i=self.info["index"]["i"])
-=======
             return self.info["access"]["seq"].format(name=name, index=self.info["index"]["i"])
->>>>>>> test_fmtprediction
         elif var.dim_num() == 2:
             return self.info["access"]["2d_seq"].format(name=name, index_i=self.info["index"]["i"], index_j=self.info["index"]["j"])
         else:
@@ -399,31 +230,11 @@ class UniversalCodeGenerator():
     def _append_singular_pattern(self, lines, pattern: Pattern, global_mode):
         var = pattern.all_vars()[0]
         if not global_mode:
-<<<<<<< HEAD
-            if var.type == Type.int:
-                if "declare_and_input" in self.info:
-                    self._append(
-                        lines, self.info["declare_and_input"]["int"].format(name=var.name))
-                    return
-            elif var.type == Type.float:
-                if "declare_and_input" in self.info:
-                    self._append(
-                        lines, self.info["declare_and_input"]["float"].format(name=var.name))
-                    return
-            elif var.type == Type.str:
-                if "declare_and_input" in self.info:
-                    self._append(
-                        lines, self.info["declare_and_input"]["string"].format(name=var.name))
-                    return
-            else:
-                raise NotImplementedError
-=======
             if "declare_and_input" in self.info:
                 kwd = self._get_format_keywords(var)
                 self._append(
                     lines, self.info["declare_and_input"][var.type.value].format(**kwd))
                 return
->>>>>>> test_fmtprediction
         self._append_declaration_and_allocation(lines, pattern, global_mode)
         self._append(lines, self._input_code_for_var(var))
 
@@ -437,26 +248,6 @@ class UniversalCodeGenerator():
             added = False
             if len(pattern.all_vars()) == 1:
                 var = pattern.all_vars()[0]
-<<<<<<< HEAD
-                if global_mode:
-                    if "allocate_and_input" in self.info:
-                        self._append(lines, self.info["allocate_and_input"]["seq"].
-                                     format(input_func=self._get_input_func(var.type),
-                                            length=self._get_length(
-                                                var.first_index),
-                                            name=var.name))
-                        added = True
-                else:
-                    if "declare_and_allocate_and_input" in self.info:
-                        self._append(lines, self.info["declare_and_allocate_and_input"]["seq"].
-                                     format(input_func=self._get_input_func(var.type),
-                                            length=self._get_length(
-                                                var.first_index),
-                                            name=var.name,
-                                            type=self._convert_type(var.type)))
-
-                        added = True
-=======
                 kwd = self._get_format_keywords(var)
                 if global_mode:
                     op = "allocate_and_input"
@@ -465,7 +256,6 @@ class UniversalCodeGenerator():
                 if op in self.info:
                     self._append(lines, self.info[op]["seq"].format(**kwd))
                     added = True
->>>>>>> test_fmtprediction
             if not added:
                 self._append_declaration_and_allocation(
                     lines, pattern, global_mode)
@@ -478,29 +268,6 @@ class UniversalCodeGenerator():
             added = False
             if len(pattern.all_vars()) == 1:
                 var = pattern.all_vars()[0]
-<<<<<<< HEAD
-                if global_mode:
-                    if "allocate_and_input" in self.info:
-                        self._append(lines, self.info["allocate_and_input"]["2d_seq"].
-                                     format(input_func=self._get_input_func(var.type),
-                                            length_i=self._get_length(
-                                                var.first_index),
-                                            length_j=self._get_length(
-                                                var.second_index),
-                                            name=var.name))
-                        added = True
-                else:
-                    if "declare_and_allocate_and_input" in self.info:
-                        self._append(lines, self.info["declare_and_allocate_and_input"]["2d_seq"].
-                                     format(input_func=self._get_input_func(var.type),
-                                            length_i=self._get_length(
-                                                var.first_index),
-                                            length_j=self._get_length(
-                                                var.second_index),
-                                            name=var.name,
-                                            type=self._convert_type(var.type)))
-                        added = True
-=======
                 kwd = self._get_format_keywords(var)
                 if global_mode:
                     op = "allocate_and_input"
@@ -509,7 +276,6 @@ class UniversalCodeGenerator():
                 if op in self.info:
                     self._append(lines, self.info[op]["2d_seq"].format(**kwd))
                     added = True
->>>>>>> test_fmtprediction
             if not added:
                 self._append_declaration_and_allocation(
                     lines, pattern, global_mode)
@@ -519,16 +285,11 @@ class UniversalCodeGenerator():
                     lines, self._loop_header(representative_var, True), 1)
                 for var in pattern.all_vars():
                     self._append(lines, self._input_code_for_var(var), 2)
-<<<<<<< HEAD
-                self._append(lines, self.info["loop"]["footer"].format(), 1)
-                self._append(lines, self.info["loop"]["footer"].format())
-=======
                 # loop_varを指定してるのはVisual Basicなどfooterにループの変数書かなきゃいけない言語向けのつもり
                 self._append(lines, self.info["loop"]["footer"].format(
                     loop_var=self.info["index"]["j"]), 1)
                 self._append(lines, self.info["loop"]["footer"].format(
                     loop_var=self.info["index"]["i"]))
->>>>>>> test_fmtprediction
         else:
             raise NotImplementedError
 
@@ -538,12 +299,9 @@ class UniversalCodeGenerator():
         return self._config.indent(depth)
 
 
-<<<<<<< HEAD
-=======
 def get_builtin_code_generator_info_toml_path(lang):
     return Path(__file__).parent / "universal_generator" / "{lang}.toml".format(lang=lang)
 
 
->>>>>>> test_fmtprediction
 class NoPredictionResultGiven(Exception):
     pass

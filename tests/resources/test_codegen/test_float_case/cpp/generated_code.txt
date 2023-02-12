@@ -25,16 +25,6 @@ void solve(long long L, long long N, long long M, std::vector<long double> K, st
 
 int main(){
     long long L;
-<<<<<<< HEAD
-    scanf("%lld", &L);
-    long long N;
-    scanf("%lld", &N);
-    long long M;
-    scanf("%lld", &M);
-    std::vector<long double> K(L);
-    for(int i = 0 ; i < L ; i++){
-        scanf("%Lf", &K[i]);
-=======
     std::scanf("%lld", &L);
     long long N;
     std::scanf("%lld", &N);
@@ -43,18 +33,12 @@ int main(){
     std::vector<long double> K(L);
     for(int i = 0 ; i < L ; i++){
         std::scanf("%Lf", &K[i]);
->>>>>>> test_fmtprediction
     }
     std::vector<long long> A(N);
     std::vector<long double> S(N);
     for(int i = 0 ; i < N ; i++){
-<<<<<<< HEAD
-        scanf("%lld", &A[i]);
-        scanf("%Lf", &S[i]);
-=======
         std::scanf("%lld", &A[i]);
         std::scanf("%Lf", &S[i]);
->>>>>>> test_fmtprediction
     }
     solve(L, N, M, std::move(K), std::move(A), std::move(S));
     return 0;

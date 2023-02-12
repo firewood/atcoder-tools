@@ -47,20 +47,6 @@ def predict_format(content: ProblemContent) -> FormatPredictionResult:
         tokenized_possible_formats = []
         if ct == 0:
             try:
-<<<<<<< HEAD
-                simple_format = predict_simple_format(
-                    format.var_tokens, to_1d_flag)
-                output_cands.append(
-                    FormatPredictionResult.create_typed_format(simple_format, predict_types(simple_format, samples)))
-                break
-            except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
-                pass
-    if len(output_cands) > 1:
-        raise MultiplePredictionResultsError(output_cands)
-    if len(output_cands) == 0:
-        raise NoPredictionResultError
-    return output_cands[0]
-=======
                 tokenized_possible_formats += search_formats_with_minimum_vars(
                     input_format)
             except NoFormatFoundError:
@@ -96,4 +82,3 @@ def predict_format(content: ProblemContent) -> FormatPredictionResult:
             continue
         else:
             raise NoPredictionResultError
->>>>>>> test_fmtprediction

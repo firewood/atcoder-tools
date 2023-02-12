@@ -55,15 +55,9 @@ void solve(long long N, long long M, std::vector<std::vector<std::string>> H, st
 
 int main(){
     long long N;
-<<<<<<< HEAD
-    scanf("%lld", &N);
-    long long M;
-    scanf("%lld", &M);
-=======
     std::scanf("%lld", &N);
     long long M;
     std::scanf("%lld", &M);
->>>>>>> test_fmtprediction
     std::vector<std::vector<std::string>> H(N-2+1, std::vector<std::string>(M-1-2+1));
     for(int i = 0 ; i < N-2+1 ; i++){
         for(int j = 0 ; j < M-1-2+1 ; j++){
@@ -73,16 +67,6 @@ int main(){
     std::vector<long long> A(N-2+1);
     std::vector<long double> B(N-2+1);
     for(int i = 0 ; i < N-2+1 ; i++){
-<<<<<<< HEAD
-        scanf("%lld", &A[i]);
-        scanf("%Lf", &B[i]);
-    }
-    long long Q;
-    scanf("%lld", &Q);
-    std::vector<long long> X(M+Q);
-    for(int i = 0 ; i < M+Q ; i++){
-        scanf("%lld", &X[i]);
-=======
         std::scanf("%lld", &A[i]);
         std::scanf("%Lf", &B[i]);
     }
@@ -91,7 +75,6 @@ int main(){
     std::vector<long long> X(M+Q);
     for(int i = 0 ; i < M+Q ; i++){
         std::scanf("%lld", &X[i]);
->>>>>>> test_fmtprediction
     }
     solve(N, M, std::move(H), std::move(A), std::move(B), Q, std::move(X));
     return 0;

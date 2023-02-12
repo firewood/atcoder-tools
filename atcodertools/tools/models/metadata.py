@@ -12,7 +12,6 @@ DEFAULT_OUT_EXAMPLE_PATTERN = "out_*.txt"
 =======
 from atcodertools.common.judgetype import NormalJudge, DecimalJudge, Judge
 from atcodertools.common.language import Language, CPP
->>>>>>> test_fmtprediction
 
 
 class Metadata:
@@ -28,7 +27,6 @@ class Metadata:
 =======
     def __init__(self, problem: Problem, code_filename: str, sample_in_pattern: str, sample_out_pattern: str,
                  lang: Language, judge_method: Judge = NormalJudge(), timeout_ms: int = None):
->>>>>>> test_fmtprediction
         self.problem = problem
         self.code_filename = code_filename
         self.sample_in_pattern = sample_in_pattern
@@ -91,13 +89,10 @@ class Metadata:
             f.write('\n')
 
 
-<<<<<<< HEAD
-=======
 DEFAULT_IN_EXAMPLE_PATTERN = 'in_*.txt'
 DEFAULT_OUT_EXAMPLE_PATTERN = "out_*.txt"
 
 
->>>>>>> test_fmtprediction
 DEFAULT_METADATA = Metadata(
     problem=None,
     code_filename=None,

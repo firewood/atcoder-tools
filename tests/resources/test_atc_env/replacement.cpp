@@ -1,7 +1,4 @@
 // Failed to generate code
-<<<<<<< HEAD
-#include<bits/stdc++.h>
-=======
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -20,7 +17,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstdio>
->>>>>>> test_fmtprediction
 using namespace std;
 
 int main(){

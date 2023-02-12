@@ -1,17 +1,9 @@
 {
-<<<<<<< HEAD
- "code_filename": "main.java",
- "judge": {
-  "judge_type": "normal"
- },
- "lang": "java",
-=======
  "code_filename": "main.cpp",
  "judge": {
   "judge_type": "normal"
  },
  "lang": "cpp",
->>>>>>> test_fmtprediction
  "problem": {
   "alphabet": "A",
   "contest": {

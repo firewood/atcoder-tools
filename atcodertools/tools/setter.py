@@ -2,28 +2,15 @@
 
 import argparse
 import os
-<<<<<<< HEAD
-import shutil
-from atcodertools.common.judgetype import NormalJudge, DecimalJudge, ErrorType, MultiSolutionJudge, InteractiveJudge, \
-=======
 from atcodertools.common.judgetype import NormalJudge, DecimalJudge, ErrorType,\
->>>>>>> test_fmtprediction
     JudgeType, NoJudgeTypeException, DEFAULT_EPS
 from atcodertools.common.logging import logger
 from atcodertools.tools.models.metadata import Metadata
 from atcodertools.common.language import Language, ALL_LANGUAGES
-<<<<<<< HEAD
-from atcodertools.tools.templates import get_default_judge_template_path
-from atcodertools.tools.codegen import main as codegen_main
-
-USER_FACING_JUDGE_TYPE_LIST = [
-    "normal", "absolute", "relative", "absolute_or_relative", "multisolution", "interactive"]
-=======
 from atcodertools.tools.codegen import main as codegen_main
 
 USER_FACING_JUDGE_TYPE_LIST = [
     "normal", "absolute", "relative", "absolute_or_relative"]
->>>>>>> test_fmtprediction
 
 
 def main(prog, args) -> None:
@@ -48,11 +35,7 @@ def main(prog, args) -> None:
                         type=float,
                         default=None)
 
-<<<<<<< HEAD
-    parser.add_argument("--lang",
-=======
     parser.add_argument("--lang", '-l',
->>>>>>> test_fmtprediction
                         help="Programming language of your template code, {}.\n".format(
                             " or ".join([lang.name for lang in ALL_LANGUAGES])),
                         default=None)
@@ -61,13 +44,10 @@ def main(prog, args) -> None:
                         help="Target directory to test. [Default] Current directory",
                         default=".")
 
-<<<<<<< HEAD
-=======
     parser.add_argument("--without-login",
                         action="store_true",
                         help="Download data without login")
 
->>>>>>> test_fmtprediction
     args = parser.parse_args(args)
 
     old_metadata = Metadata.load_from(os.path.join(args.dir, "metadata.json"))
@@ -76,14 +56,6 @@ def main(prog, args) -> None:
     output_metadata = Metadata.load_from(
         os.path.join(args.dir, "metadata.json"))
 
-<<<<<<< HEAD
-    if args.judge_type in ["absolute", "relative", "absolute_or_relative"]:
-        new_metadata_judge_type = "decimal"
-    else:
-        new_metadata_judge_type = args.judge_type
-
-    old_metadata_judge_type = old_metadata.judge_method.judge_type.value
-=======
     old_metadata_judge_type = old_metadata.judge_method.judge_type.value
 
     if args.judge_type in ["absolute", "relative", "absolute_or_relative"]:
@@ -93,46 +65,12 @@ def main(prog, args) -> None:
         new_metadata_judge_type = args.judge_type
     else:
         new_metadata_judge_type = old_metadata_judge_type
->>>>>>> test_fmtprediction
 
     if new_metadata_judge_type is not None and new_metadata_judge_type != old_metadata_judge_type:
         if new_metadata_judge_type == JudgeType.Normal.value:
             output_metadata.judge_method = NormalJudge()
         elif new_metadata_judge_type == JudgeType.Decimal.value:
             output_metadata.judge_method = DecimalJudge()
-<<<<<<< HEAD
-        elif new_metadata_judge_type == JudgeType.MultiSolution.value:
-            output_metadata.judge_method = MultiSolutionJudge()
-        elif new_metadata_judge_type == JudgeType.Interactive.value:
-            output_metadata.judge_method = InteractiveJudge()
-        else:
-            raise NoJudgeTypeException()
-
-    judge_code_filename = os.path.join(args.dir, "judge.cpp")
-
-    if new_metadata_judge_type == JudgeType.Decimal.value:
-        if args.error_value is not None:
-            output_metadata.judge_method.diff = args.error_value
-        else:
-            logger.warn(
-                "Error-value is not specified. Default value will be set.")
-        output_metadata.judge_method.error_type = ErrorType(args.judge_type)
-
-    elif new_metadata_judge_type == JudgeType.MultiSolution.value:
-        if not os.path.exists(judge_code_filename):
-            print("Creating {} (multi-solution)".format(judge_code_filename))
-            judge_template_path = get_default_judge_template_path('cpp')
-            shutil.copy(judge_template_path, judge_code_filename)
-        else:
-            print("Judge code exists. Skipping creating judge code...")
-    elif new_metadata_judge_type == JudgeType.Interactive.value:
-        if not os.path.exists(judge_code_filename):
-            print("Creating {} (interactive)".format(judge_code_filename))
-            judge_template_path = get_default_judge_template_path('cpp')
-            shutil.copy(judge_template_path, judge_code_filename)
-        else:
-            print("Judge code exists. Skipping creating judge code...")
-=======
             if args.error_value is None:
                 logger.warn(
                     "Error-value is not specified. DEFAULT_EPS is set")
@@ -142,7 +80,6 @@ def main(prog, args) -> None:
 
     if new_metadata_judge_type == JudgeType.Decimal.value and args.error_value is not None:
         output_metadata.judge_method.diff = args.error_value
->>>>>>> test_fmtprediction
 
     if args.lang is not None:
         if args.lang != output_metadata.lang.name:
@@ -154,15 +91,10 @@ def main(prog, args) -> None:
             main_code_filename = os.path.join(
                 args.dir, output_metadata.code_filename)
             if not os.path.exists(main_code_filename):
-<<<<<<< HEAD
-                codegen_main("", ["--lang", output_metadata.lang.name,
-                                  url], open(main_code_filename, 'w'))
-=======
                 a = ["--lang", output_metadata.lang.name, url]
                 if args.without_login:
                     a.append("--without-login")
                 codegen_main("", a, open(main_code_filename, 'w'))
->>>>>>> test_fmtprediction
             else:
                 print("File exists: ", output_metadata.code_filename)
         else:

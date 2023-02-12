@@ -1,19 +1,10 @@
 import unittest
 import os
-<<<<<<< HEAD
-from argparse import Namespace
-
-from atcodertools.codegen.code_style_config import CodeStyleConfig, INDENT_TYPE_SPACE, CodeStyleConfigInitError, \
-    INDENT_TYPE_TAB
-from atcodertools.common.language import CPP, PYTHON
-from atcodertools.config.config import Config, ProgramArgs
-=======
 import tempfile
 
 from atcodertools.codegen.code_style_config import CodeStyleConfig, INDENT_TYPE_SPACE, CodeStyleConfigInitError, \
     INDENT_TYPE_TAB
 from atcodertools.config.config import Config, ConfigType
->>>>>>> test_fmtprediction
 from atcodertools.tools import get_default_config_path
 from atcodertools.common.language import NIM
 from atcodertools.codegen.models.code_gen_args import CodeGenArgs
@@ -74,26 +65,6 @@ class TestConfig(unittest.TestCase):
         with open(config.code_style_config.template_file, 'r') as f:
             self.assertEqual("this is custom_template.cpp", f.read())
 
-<<<<<<< HEAD
-    def test_language_specific_options(self):
-        os.chdir(RESOURCE_DIR)
-
-        with open(os.path.join(RESOURCE_DIR, "lang_specific_options.toml"), 'r') as f:
-            config = Config.load(f)
-
-        self.assertEqual('new_value', config.run_config.compile_command)
-        self.assertEqual('kept_value', config.run_config.run_command)
-
-        self.assertEqual('new_value', config.run_config.compile_command)
-        self.assertEqual('kept_value', config.run_config.run_command)
-
-        self.assertEqual(
-            'new_value', config.postprocess_config.exec_cmd_on_problem_dir)
-        self.assertEqual(
-            'kept_value', config.postprocess_config.exec_cmd_on_contest_dir)
-
-        self.assertEqual('kept_value', config.etc_config.in_example_format)
-=======
     def test_load_config_multi_lang(self):
         os.chdir(RESOURCE_DIR)
 
@@ -108,7 +79,6 @@ class TestConfig(unittest.TestCase):
                 f, {ConfigType.CODESTYLE, ConfigType.POSTPROCESS})
 
         self.assertEqual(2, config.code_style_config.indent_width)
->>>>>>> test_fmtprediction
 
     def test_load_config_fails_due_to_typo(self):
         try:
@@ -137,22 +107,6 @@ class TestConfig(unittest.TestCase):
             template_file='not existing path'
         )
 
-<<<<<<< HEAD
-    def test_load_with_program_args(self):
-        os.chdir(RESOURCE_DIR)
-
-        with open(os.path.join(RESOURCE_DIR, "all_options.toml"), 'r') as f:
-            config = Config.load(f, ProgramArgs.load(Namespace(
-                lang="python",
-                template=None,
-                workspace=None,
-                without_login=None,
-                parallel=None,
-                save_no_session_cache=None
-            )))
-
-        self.assertEqual(PYTHON, config.code_style_config.lang)
-=======
     def test_custom_codegen_toml(self):
         response = self.runner.run('abc079-D')
         template_file = os.path.join(
@@ -179,7 +133,6 @@ class TestConfig(unittest.TestCase):
         )
 
         self.assertEqual(generated_code, code)
->>>>>>> test_fmtprediction
 
     def _expect_error_when_init_config(self, **kwargs):
         try:

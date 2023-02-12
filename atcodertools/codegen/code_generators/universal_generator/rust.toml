@@ -3,11 +3,7 @@ insert_space_around_operators = false
 
 # global変数宣言時の接頭辞
 global_prefix = ""
-<<<<<<< HEAD
-#input_part_prefix = "let con = read_string();\nlet mut scanner = Scanner::new(&con);"
-=======
 input_part_prefix = "let con = read_string();\nlet mut scanner = Scanner::new(&con);"
->>>>>>> test_fmtprediction
 
 # ループ
 [loop]
@@ -18,19 +14,12 @@ footer = "}}"
 [type]
 int = "i64"
 float = "f64"
-<<<<<<< HEAD
-string = "String"
-=======
 str = "String"
->>>>>>> test_fmtprediction
 
 # デフォルト値
 [default]
 int = "0i64"
 float = "0f64"
-<<<<<<< HEAD
-string = "String::new()"
-=======
 str = "String::new()"
 
 # 引数
@@ -45,17 +34,12 @@ seq = "{name}: Vec<{type}>"
 [access]
 seq = "{name}[{index}]"
 2d_seq = "{name}[{index_i}][{index_j}]"
->>>>>>> test_fmtprediction
 
 # 宣言
 [declare]
 int = "let mut {name}: i64;"
 float = "let mut {name}: f64;"
-<<<<<<< HEAD
-string = "let mut {name}: String;"
-=======
 str = "let mut {name}: String;"
->>>>>>> test_fmtprediction
 seq = "let mut {name}: Vec<{type}>;"
 2d_seq = "let mut {name}: Vec<Vec<{type}>>;"
 
@@ -73,23 +57,6 @@ seq = "let mut {name}: Vec<{type}> = vec![{default}; ({length}) as usize];"
 [input]
 int = "{name} = scanner.next();"
 float = "{name} = scanner.next();"
-<<<<<<< HEAD
-string = "{name} = scanner.next();"
-
-# 引数
-[arg]
-int = "{name}: i64"
-float = "{name}: f64"
-string = "{name}: String"
-seq = "{name}: Vec<{type}>"
-2d_seq = "{name}: Vec<Vec<{type}>>"
-
-# 配列アクセス
-[access]
-seq = "{name}[{index_i}]"
-2d_seq = "{name}[{index_i}][{index_j}]"
-=======
 str = "{name} = scanner.next();"
 
 
->>>>>>> test_fmtprediction
