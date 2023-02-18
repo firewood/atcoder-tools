@@ -2,29 +2,11 @@ import json
 from typing import Optional
 
 from atcodertools.client.models.problem import Problem
-<<<<<<< HEAD
-from atcodertools.common.judgetype import NormalJudge, DecimalJudge, MultiSolutionJudge, InteractiveJudge, Judge, \
-    NoJudgeTypeException
-from atcodertools.common.language import Language, CPP
-
-DEFAULT_IN_EXAMPLE_PATTERN = 'in_*.txt'
-DEFAULT_OUT_EXAMPLE_PATTERN = "out_*.txt"
-=======
 from atcodertools.common.judgetype import NormalJudge, DecimalJudge, Judge
 from atcodertools.common.language import Language, CPP
 
 
 class Metadata:
-
-<<<<<<< HEAD
-    def __init__(self,
-                 problem: Optional[Problem],
-                 code_filename: Optional[str],
-                 sample_in_pattern: str,
-                 sample_out_pattern: str,
-                 lang: Optional[Language],
-                 judge_method: Judge = NormalJudge()):
-=======
     def __init__(self, problem: Problem, code_filename: str, sample_in_pattern: str, sample_out_pattern: str,
                  lang: Language, judge_method: Judge = NormalJudge(), timeout_ms: int = None):
         self.problem = problem

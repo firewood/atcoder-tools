@@ -47,21 +47,7 @@ def main():
             "{} compile -- to compile codes in your workspace".format(sys.argv[0]))
         print("{} test -- to test codes in your workspace".format(sys.argv[0]))
         print(
-            "{} compile -- to compile codes in your workspace".format(sys.argv[0]))
-        print("{} test -- to test codes in your workspace".format(sys.argv[0]))
->>>>>>> test_fmtprediction
-        print(
-            "{} test -- to test your code in the workspace".format(sys.argv[0]))
-        print(
             "{} submit -- to submit your code to the contest system".format(sys.argv[0]))
-        print(
-            "{} compile -- compile source code".format(sys.argv[0]))
-        print(
-            "{} set -- switch program language/judge method".format(sys.argv[0]))
-        print(
-            "{} codegen -- to generate code of the specified single problem".format(sys.argv[0]))
-        print(
-            "{} set -- to set some additional option(error value, language)".format(sys.argv[0]))
         print(
             "{} set -- to set some additional option(error value, language)".format(sys.argv[0]))
         print(

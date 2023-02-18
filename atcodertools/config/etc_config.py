@@ -14,5 +14,3 @@ class EtcConfig:
         self.skip_existing_problems = skip_existing_problems
         self.in_example_format = in_example_format
         self.out_example_format = out_example_format
-        self.compile_before_testing = compile_before_testing
-        self.compile_only_when_diff_detected = compile_only_when_diff_detected
