@@ -17,7 +17,11 @@ class MultiplePredictionResultsError(Exception):
         self.cands = cands
 
 
-def suspect_single_string(input_format: str, samples):
+def suspect_single_string(input_format: list[str], samples):
+    # TODO: input_formatの長さが2以上のsingle stringは考えないことにする
+    if len(input_format) >= 2:
+        return None
+    input_format = input_format[0]
     a = input_format.strip().split()
     if len(a) != 1:
         return None
@@ -32,53 +36,103 @@ def suspect_single_string(input_format: str, samples):
     pattern = input_format[0:i + 1]
     if len([m.start() for m in re.finditer(pattern, input_format)]) < 2:
         return None
-    return input_format[0:i]
+    return [input_format[0:i]]
 
 
-def predict_format(content: ProblemContent) -> FormatPredictionResult:
+def predict_format(content: ProblemContent) -> list[FormatPredictionResult]:
     input_format = content.get_input_format()
+    print("input_format.loop_length_var: ", input_format.loop_length_var)
     samples = content.get_samples()
-    input_format = input_format.replace('\'', 'prime')
-
+    # TODO: primeの置換、ここでいいのか？
+    input_format_str_list = list(map(lambda x: x.replace('\'', 'prime'), input_format.input_format))
+    print("input_format_str_list: ", input_format_str_list)
     if len(samples) == 0:
         raise NoPredictionResultError
 
+    # 1周目(ct = 0)
+    # 通常の文字列として実行。見つからなければ二周目へ
+    # 2周目(ct = 1)
+    # 1文字を疑う
     for ct in [0, 1]:
         tokenized_possible_formats = []
         if ct == 0:
             try:
                 tokenized_possible_formats += search_formats_with_minimum_vars(
-                    input_format)
+                    input_format_str_list)
             except NoFormatFoundError:
                 continue
         elif ct == 1:
-            input_format2 = suspect_single_string(input_format, samples)
-            if input_format2 is not None:
+            input_format_str_list2 = suspect_single_string(input_format_str_list, samples)
+            if input_format_str_list2 is not None:
                 try:
                     tokenized_possible_formats += search_formats_with_minimum_vars(
-                        input_format2)
+                        input_format_str_list2)
                 except NoFormatFoundError:
                     raise NoPredictionResultError
 
         output_cands = []
-        for format in tokenized_possible_formats:
-            try:
-                simple_format_array = predict_simple_format(format.var_tokens)
-            except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
-                continue
-            for simple_format in simple_format_array:
+        # 1d flag系はpredict_simple_formatの中でやってくれるはず
+        simple_formats = []
+        for tokenized_possible_format in tokenized_possible_formats:
+            simple_format = []
+            for format in tokenized_possible_format:
+                try:
+                    simple_format.append(predict_simple_format(format.var_tokens))
+                except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
+                    pass
+            simple_formats.append(simple_format)
+
+        # TODO: この対応でいいのか？
+        simple_formats = list(map(lambda x: x[0], simple_formats))
+        #output_cands = []
+        #for format in tokenized_possible_formats:
+        #    try:
+        #        simple_format_array = predict_simple_format(format.var_tokens)
+        #    except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
+        #        continue
+        #    for simple_format in simple_format_array:
+        #        try:
+        #            output_cands.append(
+        #                FormatPredictionResult.create_typed_format(simple_format, predict_types(simple_format, samples)))
+        #            break
+        #        except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
+        #            pass
+
+        if len(simple_formats) == 1:
+            for a in simple_formats[0]:
+                simple_format = [a]
                 try:
                     output_cands.append(
-                        FormatPredictionResult.create_typed_format(simple_format, predict_types(simple_format, samples)))
+                        FormatPredictionResult.create_typed_format(simple_format, predict_types(simple_format, samples, input_format.loop_length_var)))
                     break
                 except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
                     pass
+        elif len(simple_formats) == 2:
+            for a in simple_formats[0]:
+                for b in simple_formats[1]:
+                    simple_format = [a, b]
+                    try:
+                        output_cands.append(
+                            FormatPredictionResult.create_typed_format(simple_format, predict_types(simple_format, samples, input_format.loop_length_var)))
+                        break
+                    except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
+                        pass
 
-        if len(output_cands) == 1:
-            return output_cands[0]
-        elif len(output_cands) > 1:
-            raise MultiplePredictionResultsError(output_cands)
-        elif ct == 0:
+        # TODO: ここをコメントアウトしたが大丈夫か？
+        # if len(output_cands) > 1:
+        #    raise MultiplePredictionResultsError(output_cands)
+        if len(output_cands) == 0:
+            #raise NoPredictionResultError
             continue
-        else:
-            raise NoPredictionResultError
+
+        return output_cands[0]
+
+
+    #    if len(output_cands) == 1:
+    #        return output_cands[0]
+    #    elif len(output_cands) > 1:
+    #        raise MultiplePredictionResultsError(output_cands)
+    #    elif ct == 0:
+    #        continue
+    #    else:
+    #        raise NoPredictionResultError
