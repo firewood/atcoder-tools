@@ -163,9 +163,7 @@ def search_formats_with_minimum_vars(input_format: list[str]) -> List[TokenizedF
     Fast enough for realistic instances.
     This method returns possible formats with the smallest number of variables.
     """
-    print("search format with minimum vars: ",input_format)
     tokens = list(map(_sanitized_tokens, input_format))
-    print("tokens: ", tokens)
     a = []
     for token in tokens:
         searcher = FormatSearcher(token)

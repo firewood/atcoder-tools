@@ -41,11 +41,9 @@ def suspect_single_string(input_format: list[str], samples):
 
 def predict_format(content: ProblemContent) -> list[FormatPredictionResult]:
     input_format = content.get_input_format()
-    print("input_format.loop_length_var: ", input_format.loop_length_var)
     samples = content.get_samples()
     # TODO: primeの置換、ここでいいのか？
     input_format_str_list = list(map(lambda x: x.replace('\'', 'prime'), input_format.input_format))
-    print("input_format_str_list: ", input_format_str_list)
     if len(samples) == 0:
         raise NoPredictionResultError
 
@@ -126,7 +124,7 @@ def predict_format(content: ProblemContent) -> list[FormatPredictionResult]:
             continue
 
         return output_cands[0]
-
+    raise NoPredictionResultError
 
     #    if len(output_cands) == 1:
     #        return output_cands[0]

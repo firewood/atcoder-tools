@@ -143,13 +143,9 @@ def merge_type_dicts(to_dict: Dict[str, Type], src_dict: Dict[str, Type]):
 
 def predict_types(simple_format: list[Format[SimpleVariable]], samples: List[Sample], loop_length_var: str) -> Dict[str, Type]:
     res_type_dict = {}
-    print(simple_format)
     if len(simple_format) == 1:
-        print("SINGLE")
         for sample in samples:
             token_manager = TokenManager(sample.get_input().split())
-            print("simple_format[0]: ")
-            print(simple_format[0])
             predictor = TypePredictor(simple_format[0])
             try:
                 while not token_manager.is_terminal():
@@ -163,7 +159,6 @@ def predict_types(simple_format: list[Format[SimpleVariable]], samples: List[Sam
                     InvalidLoopIndexError, EvaluateError):
                 raise TypePredictionFailedError
     else:
-        print("MULTI!!")
         for sample in samples:
             token_manager = TokenManager(sample.get_input().split())
             predictor = TypePredictor(simple_format[0])
