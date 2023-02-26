@@ -14,9 +14,11 @@ class Response:
         self.status = status
         if result:
             self.original_result = result
-            self.simple_format = result.format
-            var_info = [(var.name, var.type)
-                        for var in result.format.all_vars()]
+            self.simple_format = list(map(lambda x: x.format, result))
+            var_info = []
+            for r in result:
+                var_info += [(var.name, var.type)
+                             for var in r.format.all_vars()]
             self.types = [(name, type.to_py_type()) for name, type in var_info]
 
 

@@ -38,10 +38,15 @@ class TestFormatPrediction(unittest.TestCase):
             response = runner.run(case)
 
             if response.status == "OK":
-                output_text += "{:40} {:20} {} {}\n".format(case, response.status, response.simple_format,
+# TODO: インデックス0しか見ていない。本当はansの方を配列に変える方が適切
+                first_format = response.simple_format[0]
+                output_text += "{:40} {:20} {} {}\n".format(case, response.status, first_format,
                                                             response.types)
+                print("{:40} {:20} {} {}\n".format(case, response.status, first_format,
+                                                            response.types))
             else:
                 output_text += "{:40} {}\n".format(case, response.status)
+            print(output_text)
         with open("answer_text.txt", "w") as f:
             f.write(output_text)
         f.close()
@@ -62,7 +67,8 @@ class TestFormatPrediction(unittest.TestCase):
                     logger.debug(
                         "Sample Input {num}:\n{inp}".format(inp=s.get_input(), num=idx + 1))
                 self.assertEqual(ans, out)
-
+        with open("~/git/atcoder-tools/output_answer.txt", "w") as f:
+            f.write(output_text)
         self.assertEqual(len(answer), len(output_text))
 
 
