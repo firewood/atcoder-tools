@@ -6,6 +6,7 @@ from atcodertools.release_management.version_check import (
     VersionCheckError,
 )
 from atcodertools.tools.envgen import main as envgen_main
+from atcodertools.tools.copy import main as copy_main
 from atcodertools.tools.tester import main as tester_main
 from atcodertools.tools.submit import main as submit_main
 from atcodertools.tools.codegen import main as codegen_main
@@ -40,7 +41,7 @@ def notify_if_latest_version_found():
 def main():
     notify_if_latest_version_found()
 
-    if len(sys.argv) < 2 or sys.argv[1] not in ("gen", "test", "submit", "codegen", "compile", "set", "version"):
+    if len(sys.argv) < 2 or sys.argv[1] not in ("copy", "gen", "test", "submit", "codegen", "compile", "set", "version"):
         print("Usage:")
         print("{} gen -- to generate workspace".format(sys.argv[0]))
         print(
@@ -59,6 +60,9 @@ def main():
 
     if sys.argv[1] == "gen":
         envgen_main(prog, args)
+
+    if sys.argv[1] == "copy":
+        copy_main(prog, args)
 
     if sys.argv[1] == "test":
         exit_program(tester_main(prog, args))
