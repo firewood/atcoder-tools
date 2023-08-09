@@ -6,12 +6,12 @@ global_prefix = ""
 
 # ループ
 [loop]
-header = "for(int {loop_var} = 0 ; {loop_var} < {length} ; {loop_var}++){{"
+header = "for (int {loop_var} = 0; {loop_var} < {length}; {loop_var}++) {{"
 footer = "}}"
 
 # タイプ
 [type]
-int = "long long"
+int = "int64_t"
 float = "long double"
 str = "std::string"
 
@@ -23,7 +23,7 @@ str = '""'
 
 # 引数
 [arg]
-int = "long long {name}"
+int = "int64_t {name}"
 float = "long double {name}"
 str = "std::string {name}"
 seq = "std::vector<{type}> {name}"
@@ -41,7 +41,7 @@ seq = "{name}[{index}]"
 
 # 宣言
 [declare]
-int = "long long {name};"
+int = "int64_t {name};"
 float = "long double {name};"
 str = "std::string {name};"
 seq = "std::vector<{type}> {name};"
@@ -59,10 +59,10 @@ seq = "std::vector<{type}> {name}({length});"
 
 # 入力
 [input]
-#int = "std::cin >> {name};"
-int = "std::scanf(\"%lld\", &{name});"
-#float = "std::cin >> {name};"
-float = "std::scanf(\"%Lf\", &{name});"
+int = "std::cin >> {name};"
+#int = "std::scanf(\"%lld\", &{name});"
+float = "std::cin >> {name};"
+#float = "std::scanf(\"%Lf\", &{name});"
 str = "std::cin >> {name};"
 
 
