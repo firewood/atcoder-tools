@@ -1,4 +1,5 @@
 import copy
+import re
 from typing import List, Dict
 
 from atcodertools.fmtprediction.models.calculator import CalcNode, CalcParseError
@@ -69,6 +70,25 @@ def _remove_spaces_in_curly_brackets(input_format):
 
 
 def _sanitized_tokens(input_format: str) -> List[str]:
+#    print("PRE-FILTERED TOKENS: " + input_format)
+    a = []
+    for s in input_format.split('\n'):
+        # AGC007 A: A_{11}A_{12}...A_{1W} -> A_1
+        # ABC173 C: c_{1,1}c_{1,2}...c_{1,W} -> c_1
+        s = re.sub(r'(.)_{([^,]*)[,]?\s*1}._{.*}(\.+)._{.*}', r'\1_\2', s)
+        # ABC191 C: S_{1, 1} S_{1, 2} S_{1, 3} \dots S_{1, W}
+        # ARC005 C: c_{(0,0)}c_{(0,1)} … c_{(0,W-1)} -> c_0
+        s = re.sub(r'(.)_{([^,]*)[,]?\s*1}.*(\\dots|…)\s*._{.*}', r'\1_\2', s)
+        # ABC185 A, ABC 190 E: hspace{}
+        s = re.sub(r'\\hspace{\d+(pt|mm)}', r'', s)
+
+#        # ABC189 E:
+#        s = re.sub(r'\\mathrm{op}', r'OP', s)
+
+        a.append(s)
+    input_format = '\n'.join(a)
+#    print("FILTERED TOKENS: " + input_format)
+
     input_format = input_format.replace("\n", " ").replace("…", " ").replace("...", " ").replace(
         "..", " ").replace("‥", " ").replace("\\ ", " ").replace("}", "} ").replace("　", " ").replace(", ", ",")
     input_format = input_format.replace(" _ ", "_") # 空白の添字を削除
