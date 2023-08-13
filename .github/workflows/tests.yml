@@ -5,6 +5,7 @@ on:
     branches: [ stable ]
   pull_request:
     branches: [ stable ]
+  workflow_dispatch:
 
 jobs:
   build:
