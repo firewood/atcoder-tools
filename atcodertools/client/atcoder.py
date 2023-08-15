@@ -164,6 +164,7 @@ class AtCoderClient(metaclass=Singleton):
             lang_option_pattern = lang
         else:
             lang_option_pattern = lang.submission_lang_pattern
+        
 
         resp = self._request(contest.get_submit_url())
 
@@ -175,6 +176,9 @@ class AtCoderClient(metaclass=Singleton):
             "option", text=re.compile('{} -'.format(problem.get_alphabet()))).get("value")
         language_select_area = soup.find(
             'select', attrs={"data-placeholder": "-"})
+        p = language_select_area.find(
+            "option", text=lang_option_pattern)
+
         language_number = language_select_area.find(
             "option", text=lang_option_pattern).get("value")
         postdata = {
