@@ -4,6 +4,7 @@ import re
 import warnings
 from http.cookiejar import LWPCookieJar
 from typing import List, Optional, Tuple, Union
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -123,12 +124,20 @@ class AtCoderClient(metaclass=Singleton):
         return res
 
     def download_problem_content(self, problem: Problem) -> ProblemContent:
-        resp = self._request(problem.get_url())
-
-        try:
-            return ProblemContent.from_html(resp.text)
-        except (InputFormatDetectionError, SampleDetectionError) as e:
-            raise e
+        retry_delay_secs = 0.5
+        retry_max_delay_secs = 60
+        retry_max_tries = 5
+        attempt_count = 1
+        while True:
+            resp = self._request(problem.get_url())
+            try:
+                return ProblemContent.from_html(resp.text)
+            except (InputFormatDetectionError, SampleDetectionError) as e:
+                if retry_max_tries < attempt_count:
+                    raise e
+            time.sleep(retry_delay_secs)
+            retry_delay_secs = min(retry_delay_secs * 2, retry_max_delay_secs)
+            attempt_count += 1
 
     def download_all_contests(self) -> List[Contest]:
         contest_ids = []
