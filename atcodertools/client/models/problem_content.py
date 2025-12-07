@@ -84,7 +84,7 @@ class ProblemContent:
             soup)
         return res
 
-    def get_input_format(self) -> list[str]:
+    def get_input_format(self) -> InputFormat:
         return self.input_format_data
 
     def get_samples(self) -> List[Sample]:

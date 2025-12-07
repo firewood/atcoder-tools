@@ -51,7 +51,9 @@ class FormatPredictionTestRunner:
         content = self.load_problem_content(case_name)
 
         try:
-            result = predict_format(content)
+            results = predict_format(content)
+            # For tests, use the first result to maintain backward compatibility
+            result = results[0] if results else None
             return Response(result, "OK")
         except MultiplePredictionResultsError:
             return Response(None, "Multiple results")
