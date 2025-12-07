@@ -1,0 +1,35 @@
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <set>
+#include <map>
+#include <algorithm>
+#include <functional>
+#include <utility>
+#include <bitset>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <cstdio>
+#include <cassert>
+using namespace std;
+
+void solve(int64_t N, std::vector<int64_t> A){
+
+}
+
+int main(){
+    int64_t N;
+    std::cin >> N;
+    std::vector<int64_t> A(N);
+    for (int i = 0; i < N; i++) {
+        std::cin >> A[i];
+    }
+    solve(N, std::move(A));
+    return 0;
+}
