@@ -19,16 +19,16 @@
 #include <cassert>
 using namespace std;
 
-void solve(int64_t N, std::vector<int64_t> A){
+void solve(long long N, std::vector<long long> A){
 
 }
 
 int main(){
-    int64_t N;
-    std::cin >> N;
-    std::vector<int64_t> A(N);
-    for (int i = 0; i < N; i++) {
-        std::cin >> A[i];
+    long long N;
+    std::scanf("%lld", &N);
+    std::vector<long long> A(N);
+    for(int i = 0 ; i < N ; i++){
+        std::scanf("%lld", &A[i]);
     }
     solve(N, std::move(A));
     return 0;

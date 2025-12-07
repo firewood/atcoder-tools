@@ -7,8 +7,9 @@ from atcodertools.fmtprediction.models.variable import Variable, SimpleVariable
 
 class FormatPredictionResult:
 
-    def __init__(self, format_: Optional[Format[Variable]] = None):
+    def __init__(self, format_: Optional[Format[Variable]] = None, is_multiple_cases: bool = False):
         self.format = format_
+        self.is_multiple_cases = is_multiple_cases
 
     @classmethod
     def create_typed_format(cls, simple_format: Format[SimpleVariable], var_to_type: Dict[str, Type]):

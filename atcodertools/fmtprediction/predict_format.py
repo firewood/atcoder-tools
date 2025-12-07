@@ -49,6 +49,13 @@ def predict_format(content: ProblemContent) -> list[FormatPredictionResult]:
 
     results = []
 
+    # Special handling for multicase problems
+    if len(input_format_str_list) > 1:
+        # For multicase, we focus on the main problem format (skip test case count)
+        # Typically: first line is T (test cases), rest is the actual problem format
+        main_format_str = '\n'.join(input_format_str_list[1:])  # Skip the first line (T)
+        input_format_str_list = [main_format_str]  # Process as single format
+
     # Process each input format separately
     for input_format_str in input_format_str_list:
         # Try to predict format for this individual input format
@@ -82,8 +89,10 @@ def predict_format(content: ProblemContent) -> list[FormatPredictionResult]:
                         simple_format = predict_simple_format(
                             tokenized_possible_format.var_tokens, to_1d_flag)
                         typed_format = predict_types(simple_format, samples)
-                        output_cands.append(
-                            FormatPredictionResult.create_typed_format(simple_format, typed_format))
+                        result = FormatPredictionResult.create_typed_format(simple_format, typed_format)
+                        # Set multicase flag if original input had multiple lines
+                        result.is_multiple_cases = len(content.input_format_text) > 1 if isinstance(content.input_format_text, list) else False
+                        output_cands.append(result)
                         break
                     except (TypePredictionFailedError, SimpleFormatPredictionFailedError):
                         pass
