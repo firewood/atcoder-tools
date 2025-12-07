@@ -164,6 +164,10 @@ class ProblemContent:
     @staticmethod
     def _secondary_strategy(soup):  # TODO: more descriptive name
         pre_tags = soup.select('pre')
+        if len(pre_tags) == 0:
+            # No pre tags found, cannot use secondary strategy
+            raise InputFormatDetectionError("No pre tags found for secondary strategy")
+
         sample_tags = pre_tags[1:]
         input_tags = sample_tags[0::2]
         output_tags = sample_tags[1::2]
