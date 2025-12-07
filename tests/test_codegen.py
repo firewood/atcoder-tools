@@ -173,10 +173,11 @@ class TestCodeGenerator(unittest.TestCase):
 
         input_file = _full_path("echo_test_input.txt")
         expected_output_file = _full_path("echo_test_output.txt")
-        pred_result = predict_format(
+        pred_results = predict_format(
             ProblemContent(
                 load_text_file(_full_path("echo_test_format.txt")),
                 [Sample(load_text_file(_full_path("echo_test_input.txt")), None)]))
+        pred_result = pred_results[0]  # Take first result for backward compatibility
 
         for lang in ALL_LANGUAGES:
             expected_default_generated_code_file = _full_path(
