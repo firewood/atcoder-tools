@@ -14,6 +14,12 @@ def normalize(content: str) -> str:
     return content.strip().replace('\r', '') + "\n"
 
 
+def normalize_soup(content) -> str:
+    # for a in content.findAll('var'):
+    #     a.replace_with(' ' + a.text + ' ')
+    return normalize(content.text)
+
+
 def is_japanese(ch):
     # Thank you!
     # http://minus9d.hatenablog.com/entry/2015/07/16/231608
@@ -34,6 +40,28 @@ class InputFormatDetectionError(Exception):
     pass
 
 
+class InputFormat:
+    def __init__(self, input_format: list[str]):
+        self.type = None
+        self.loop_length_var = None
+        self.input_format = input_format
+
+
+def _strip_case_vars(s):
+    case_vars = ["case", "Case", "test", "Test", "query", "Query"]
+    result = []
+    for line in s.split("\n"):
+        is_case_var = False
+        for v in case_vars:
+            if line.find(v) != -1:
+                is_case_var = True
+                break
+        if is_case_var:
+            continue
+        result.append(line)
+    return "\n".join(result)
+
+
 class ProblemContent:
 
     def __init__(self, input_format_text: Optional[str] = None,
@@ -41,19 +69,23 @@ class ProblemContent:
                  original_html: Optional[str] = None,
                  ):
         self.samples = samples
-        self.input_format_text = input_format_text
+        if type(input_format_text) is str:
+            self.input_format_text = [input_format_text]
+        else:
+            self.input_format_text = input_format_text
         self.original_html = original_html
+        self.input_format_data = InputFormat(self.input_format_text)
 
     @classmethod
     def from_html(cls, html: str):
         res = ProblemContent(original_html=html)
         soup = BeautifulSoup(html, "html.parser")
-        res.input_format_text, res.samples = res._extract_input_format_and_samples(
+        res.input_format_text, res.input_format_data, res.samples = res._extract_input_format_and_samples(
             soup)
         return res
 
-    def get_input_format(self) -> str:
-        return self.input_format_text
+    def get_input_format(self) -> InputFormat:
+        return self.input_format_data
 
     def get_samples(self) -> List[Sample]:
         return self.samples
@@ -92,11 +124,19 @@ class ProblemContent:
             if input_format_tag is None:
                 raise InputFormatDetectionError
 
-            input_format_text = normalize(input_format_tag.text)
+            # input_format_text = normalize(input_format_tag.text)
+            input_format_text = list(
+                map(lambda x: normalize_soup(x), input_format_tag))
         except AttributeError:
             raise InputFormatDetectionError
 
-        return input_format_text, res
+        # input_format_textが複数あったらMulti testcaseと判定
+        if len(input_format_text) == 2:
+            input_format_text[0] = _strip_case_vars(input_format_text[0])
+
+        input_format_data = InputFormat(input_format_text)
+
+        return input_format_text, input_format_data, res
 
     @staticmethod
     def _primary_strategy(soup):
@@ -114,17 +154,29 @@ class ProblemContent:
             if section_title.startswith("入力例"):
                 input_tags.append(tag.find('pre'))
             elif section_title.startswith("入力"):
-                input_format_tag = tag.find('pre')
+                input_format_tag = tag.findAll('pre')
 
             if section_title.startswith("出力例"):
                 output_tags.append(tag.find('pre'))
         return input_format_tag, input_tags, output_tags
 
+    # TODO: こっちのタイプはmulti caseに未対応!!!
     @staticmethod
     def _secondary_strategy(soup):  # TODO: more descriptive name
         pre_tags = soup.select('pre')
+        if len(pre_tags) == 0:
+            # No pre tags found, cannot use secondary strategy
+            raise InputFormatDetectionError("No pre tags found for secondary strategy")
+
         sample_tags = pre_tags[1:]
         input_tags = sample_tags[0::2]
         output_tags = sample_tags[1::2]
-        input_format_tag = pre_tags[0]
+        input_format_tag = [pre_tags[0]]
         return input_format_tag, input_tags, output_tags
+
+
+def get_problem_content(original_html: str) -> ProblemContent:
+    try:
+        return ProblemContent.from_html(original_html)
+    except (InputFormatDetectionError, SampleDetectionError) as e:
+        raise e

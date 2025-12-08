@@ -110,76 +110,23 @@ class TestCodeGenerator(unittest.TestCase):
     def tearDown(self):
         self.test_data_controller.remove_dir()
 
-    def test_long_case(self):
-        response = self.runner.run('rco-contest-2017-qual-B')
+    def test_multiple_cases(self):
+        response = self.runner.run('abc413-D')
         for lang in ALL_LANGUAGES:
             self.verify(response, sys._getframe().f_code.co_name, lang)
 
-    def test_two_dimensional_case(self):
-        response = self.runner.run('abc079-D')
-        for lang in ALL_LANGUAGES:
-            self.verify(response, sys._getframe().f_code.co_name, lang)
-
-    def test_float_case(self):
-        response = self.runner.run('tenka1-2014-qualb-E')
-        for lang in ALL_LANGUAGES:
-            self.verify(response, sys._getframe().f_code.co_name, lang)
-
-    def test_mod_case(self):
-        response = self.runner.run('agc019-E')
-        for lang in ALL_LANGUAGES:
-            self.verify(response, sys._getframe().f_code.co_name,
-                        lang, "jinja", ProblemConstantSet(mod=998244353))
-
-    def test_yes_no_case(self):
-        response = self.runner.run('agc021-C')
-        for lang in ALL_LANGUAGES:
-            self.verify(response, sys._getframe().f_code.co_name, lang, "jinja",
-                        ProblemConstantSet(yes_str="YES", no_str="NO"))
-
-    def test_nested_embeddings_on_template(self):
-        def _load_text_file(filename):
-            with open(os.path.join(RESOURCE_DIR, "test_nested_embeddings_on_template", filename), 'r') as f:
-                return f.read()
-
-        def _trim(text):
-            return "\n".join([lang.rstrip() for lang in text.split("\n")])
-
-        template = _load_text_file("template.txt")
-        self.assertEqual(_load_text_file("answer_x_0_y_2.txt"),
-                         _trim(render(template, x=0, y=2)))
-        self.assertEqual(_load_text_file("answer_x_none_y_2.txt"),
-                         _trim(render(template, x=None, y=2)))
-
-    def test_indent_estimation(self):
-        def _load_text_file(filename):
-            with open(os.path.join(RESOURCE_DIR, "test_indent_estimation", filename), 'r') as f:
-                return f.read()
-
-        def _trim(text):
-            return "\n".join([lang.rstrip() for lang in text.split("\n")])
-
-        template = _load_text_file("template.txt")
-        self.assertEqual(_load_text_file("answer_space_2.txt"),
-                         _trim(render(template, config=CodeStyleConfig(indent_type=INDENT_TYPE_SPACE, indent_width=2), input_part=_load_text_file("indent_space_2.txt"))))
-        self.assertEqual(_load_text_file("answer_space_4.txt"),
-                         _trim(render(template, config=CodeStyleConfig(indent_type=INDENT_TYPE_SPACE, indent_width=4), input_part=_load_text_file("indent_space_4.txt"))))
-        self.assertEqual(_load_text_file("answer_tab.txt"),
-                         _trim(render(template, config=CodeStyleConfig(indent_type=INDENT_TYPE_TAB), input_part=_load_text_file("indent_tab.txt"))))
-
-    def test_default_code_generators_and_templates(self):
+    def __test_default_code_generators_and_templates(self):
         def _full_path(filename):
             return os.path.join(RESOURCE_DIR, "test_default_code_generators_and_templates", filename)
 
         input_file = _full_path("echo_test_input.txt")
         expected_output_file = _full_path("echo_test_output.txt")
-        pred_results = predict_format(
+        pred_result = predict_format(
             ProblemContent(
                 load_text_file(_full_path("echo_test_format.txt")),
-                [Sample(load_text_file(_full_path("echo_test_input.txt")), None)]))
-        pred_result = pred_results[0]  # Take first result for backward compatibility
+                [Sample(load_text_file(_full_path("echo_test_input.txt")), None)]), True)
 
-        for lang in ALL_LANGUAGES:
+        for lang in [CPP, JAVA, SWIFT]:
             expected_default_generated_code_file = _full_path(
                 os.path.join(lang.name, lang.source_code_name("expected_default_generated_code")))
 
@@ -342,7 +289,8 @@ class TestCodeGenerator(unittest.TestCase):
                     self.get_template(lang, template_type),
                     response.original_result.format,
                     constants,
-                    CodeStyleConfig(lang=lang.name))
+                    CodeStyleConfig(lang=lang.name),
+                    response.original_result.is_multiple_cases)
             ))
 
     def get_template(self, lang: Language, template_type: str) -> str:

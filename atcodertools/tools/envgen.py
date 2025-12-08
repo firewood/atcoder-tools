@@ -119,9 +119,16 @@ def prepare_procedure(atcoder_client: AtCoderClient,
     constants = predict_constants(content.original_html)
 
     try:
-        prediction_result = predict_format(content)
-        emit_info(
-            with_color("Format prediction succeeded", Fore.LIGHTGREEN_EX))
+        prediction_results = predict_format(content)
+        # For now, handle multicase by taking the first result for backward compatibility
+        # In a full implementation, this should be handled by a multicase-aware code generator
+        prediction_result = prediction_results[0] if prediction_results else FormatPredictionResult.empty_result()
+        if len(prediction_results) > 1:
+            emit_info(
+                with_color(f"Format prediction succeeded (multicase: {len(prediction_results)} formats)", Fore.LIGHTGREEN_EX))
+        else:
+            emit_info(
+                with_color("Format prediction succeeded", Fore.LIGHTGREEN_EX))
     except (NoPredictionResultError, MultiplePredictionResultsError) as e:
         prediction_result = FormatPredictionResult.empty_result()
         if isinstance(e, NoPredictionResultError):

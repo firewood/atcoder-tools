@@ -12,8 +12,10 @@ class CodeGenArgs:
                  template: str,
                  format_: Optional[Format[Variable]],
                  constants: ProblemConstantSet,
-                 config: CodeStyleConfig):
+                 config: CodeStyleConfig,
+                 is_multiple_cases: bool = False):
         self.template = template
         self.format = format_
         self.constants = constants
         self.config = config
+        self.is_multiple_cases = is_multiple_cases
