@@ -70,6 +70,7 @@ class UniversalCodeGenerator():
                     global_declaration=self._global_declaration(),
                     global_input_part=self._input_part(global_mode=True),
                     input_part_with_solve_function=self._input_part_with_solve_function(),
+                    multi_cases=len(self._format) >= 2,
                     prediction_success=True)
 
     def _input_part(self, global_mode):
